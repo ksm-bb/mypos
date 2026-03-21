@@ -541,11 +541,9 @@ function buildReceiptHTML(rec){
   const s=storeSettings;
   const d=new Date(rec.timeObj), dateStr=`${d.getDate().toString().padStart(2,'0')}-${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]}-${d.getFullYear()}`, timeStr=`${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
   
-  // ใช้ Proxy เป็นตัวกลางดึงรูปภาพ เพื่อป้องกันปัญหา CORS ตอนโหลดใบเสร็จ
-  const getProxyUrl = (url) => url.startsWith('http') ? 'https://corsproxy.io/?' + encodeURIComponent(url) : url;
-
-  const logoHTML = s.logoData ? `<div class="rp-logo"><img src="${getProxyUrl(s.logoData)}" alt="logo" crossorigin="anonymous"></div>` : '';
-  const qrHTML = s.qrData ? `<div class="rp-qr"><img src="${getProxyUrl(s.qrData)}" alt="QR" crossorigin="anonymous"><div class="rp-qr-label">สแกนเพื่อชำระเงิน</div></div>` : '';
+  // 🌟 ลบ Proxy ออกแล้ว เรียกใช้ URL รูปภาพตรงๆ
+  const logoHTML = s.logoData ? `<div class="rp-logo"><img src="${s.logoData}" alt="logo" crossorigin="anonymous"></div>` : '';
+  const qrHTML = s.qrData ? `<div class="rp-qr"><img src="${s.qrData}" alt="QR" crossorigin="anonymous"><div class="rp-qr-label">สแกนเพื่อชำระเงิน</div></div>` : '';
   
   return `${logoHTML}<div class="rp-title">${s.storeName||'My Store'}</div>
     ${s.storeDetail?`<div class="rp-subtitle">${s.storeDetail.replace(/\n/g,'<br>')}</div>`:''}${s.contact?`<div class="rp-contact">${s.contact.replace(/\n/g,'<br>')}</div>`:''}
@@ -585,12 +583,12 @@ function renderAnalysis(){
 function updateLogoPreview() {
   const url = document.getElementById('sLogoUrl').value.trim();
   storeSettings.logoData = url;
-  document.getElementById('logoPreview').innerHTML = url ? `<img src="${url}">` : '<span>🌸</span>';
+  document.getElementById('logoPreview').innerHTML = url ? `<img src="${url}" crossorigin="anonymous">` : '<span>🌸</span>';
 }
 function updateQrPreview() {
   const url = document.getElementById('sQrUrl').value.trim();
   storeSettings.qrData = url;
-  document.getElementById('qrPreview').innerHTML = url ? `<img src="${url}">` : '<span>📱</span>';
+  document.getElementById('qrPreview').innerHTML = url ? `<img src="${url}" crossorigin="anonymous">` : '<span>📱</span>';
 }
 function clearLogo() { document.getElementById('sLogoUrl').value = ''; updateLogoPreview(); }
 function clearQr() { document.getElementById('sQrUrl').value = ''; updateQrPreview(); }
