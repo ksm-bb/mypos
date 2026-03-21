@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>My Store 🌸</title>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Mitr:wght@300;400;500&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 <style>
 :root {
   --bg:#fef8f2; --bg2:#fff4f8; --surface:#ffffff; --surface2:#fdf5f0;
@@ -21,32 +22,31 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 
-/* ── LAYOUT ล็อกขนาดมือถือ ── */
+/* ── LAYOUT แก้อาการล็อคจอ เลื่อนไม่ไป ── */
 html {
-  background: #d1d5db;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+  background: #d1d5db; /* สีพื้นหลังตอนเปิดบนคอม */
 }
 body {
   width: 100%;
-  max-width: 430px;
-  height: 100vh;
+  max-width: 430px; /* ขนาดจอมือถือ */
+  margin: 0 auto;
+  height: 100dvh; /* ใช้ 100dvh ช่วยแก้ปัญหาบาร์ด้านล่างของ Safari */
   position: relative;
   background: var(--bg);
   color: var(--text);
   font-family: 'Quicksand', sans-serif;
   font-size: 16px;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-}
-@media (min-width: 431px) {
-  body { height: 90vh; max-height: 850px; border-radius: 24px; }
+  box-shadow: 0 0 30px rgba(0,0,0,0.15);
 }
 
-/* ── HEADER ── */
-.app-header{position:absolute;top:0;left:0;right:0;height:var(--header-h);background:var(--surface);border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;z-index:200;box-shadow:var(--shadow-sm); border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;}
+/* ทำให้ส่วนประกอบยึดติดอยู่แค่ในกรอบ 430px */
+.app-header { position: fixed; top: 0; left: 0; right: 0; margin: 0 auto; max-width: 430px; height: var(--header-h); background: var(--surface); border-bottom: 1.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 18px; z-index: 200; box-shadow: var(--shadow-sm); }
+.pages { position: fixed; top: var(--header-h); bottom: var(--nav-h); left: 0; right: 0; margin: 0 auto; max-width: 430px; overflow: hidden; }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; max-width: 430px; height: var(--nav-h); background: var(--surface); border-top: 1.5px solid var(--border); display: flex; z-index: 200; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -2px 14px rgba(180,100,120,.07); }
+.order-overlay, .modal-overlay { position: fixed; inset: 0; left: 0; right: 0; margin: 0 auto; max-width: 430px; background: rgba(100,60,50,.3); backdrop-filter: blur(3px); z-index: 300; display: none; align-items: flex-end; }
+
+/* ── HEADER MISC ── */
 .header-left{display:flex;flex-direction:column;gap:1px;}
 .store-name-display{font-size:1.05rem;font-weight:700;color:var(--brown);}
 .clock{font-size:0.68rem;color:var(--muted);font-weight:500;}
@@ -54,13 +54,10 @@ body {
 .cart-btn:active{transform:scale(.93);}
 .cart-badge{position:absolute;top:-5px;right:-5px;background:var(--pink-btn);color:#fff;font-size:.6rem;font-weight:700;min-width:17px;height:17px;border-radius:99px;display:none;align-items:center;justify-content:center;padding:0 4px;border:1.5px solid #fff;}
 
-/* ── PAGES ── */
-.pages{position:absolute;top:var(--header-h);bottom:var(--nav-h);left:0;right:0;overflow:hidden;}
+/* ── PAGES & SCROLL ── */
 .page{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;padding:16px 14px 8px;}
 .page.active{display:block;}
 
-/* ── BOTTOM NAV ── */
-.bottom-nav{position:absolute;bottom:0;left:0;right:0;height:var(--nav-h);background:var(--surface);border-top:1.5px solid var(--border);display:flex;z-index:200;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -2px 14px rgba(180,100,120,.07); border-radius: inherit; border-top-left-radius: 0; border-top-right-radius: 0;}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--muted);transition:color .15s;padding:8px 0;}
 .nav-item.active{color:var(--brown);}
 .nav-icon{font-size:1.25rem;line-height:1;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:12px;transition:background .15s;}
@@ -84,10 +81,8 @@ body {
 .product-price{font-size:.8rem;font-weight:700;color:var(--brown);}
 
 /* ── OVERLAYS & MODALS ── */
-.order-overlay, .modal-overlay{position:absolute;inset:0;background:rgba(100,60,50,.3);backdrop-filter:blur(3px);z-index:300;display:none;align-items:flex-end; border-radius: inherit;}
 .order-overlay.open, .modal-overlay.open{display:flex;}
 .order-sheet, .modal{width:100%;max-height:90vh;background:var(--surface);border-radius:24px 24px 0 0;display:flex;flex-direction:column;animation:sheetUp .26s cubic-bezier(.34,1.2,.64,1);padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -6px 30px rgba(180,100,120,.12);}
-@media (min-width: 431px) { .order-sheet, .modal { border-radius: 24px; max-height: 98%; } }
 @keyframes sheetUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
 .sheet-knob{width:38px;height:4px;border-radius:2px;background:var(--border);margin:13px auto 10px;flex-shrink:0;}
 .sheet-header{display:flex;justify-content:space-between;align-items:center;padding:0 18px 13px;border-bottom:1.5px solid var(--border);flex-shrink:0;}
@@ -140,7 +135,7 @@ body {
 
 .save-toast{position:absolute;bottom:calc(var(--nav-h) + 14px);left:50%;transform:translateX(-50%);background:var(--brown);color:#fff;padding:10px 22px;border-radius:99px;font-size:.82rem;font-weight:700;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;}
 .save-toast.show{opacity:1;}
-.modal{padding:22px 18px;}
+.modal{padding:22px 18px; overflow-y:auto;}
 .modal h3{font-size:.95rem;font-weight:700;color:var(--brown);margin-bottom:18px;}
 .color-row{display:flex;gap:9px;flex-wrap:wrap;}
 .swatch{width:34px;height:34px;border-radius:11px;cursor:pointer;border:2.5px solid transparent;}
@@ -347,11 +342,11 @@ body {
 
 <div class="modal-overlay" id="receiptModal">
   <div class="modal">
-    <h3>🧾 ใบเสร็จ</h3>
-    <div class="receipt-preview" id="receiptContent"></div>
+    <h3 style="text-align: center; margin-bottom: 14px;">🧾 ใบเสร็จ</h3>
+    <div id="receiptContent">
+      </div>
     <div class="modal-btns" style="margin-top:16px">
-      <button class="btn-cancel" onclick="document.getElementById('receiptModal').classList.remove('open')">ปิด</button>
-      <button class="btn-save" onclick="saveReceiptImage()">📥 บันทึกรูป</button>
+      <button class="btn-cancel" style="width:100%;" onclick="document.getElementById('receiptModal').classList.remove('open')">ปิด</button>
     </div>
   </div>
 </div>
@@ -418,33 +413,6 @@ function updateClock() {
 setInterval(updateClock,1000); updateClock();
 
 function updateHeaderName() { document.getElementById('storeNameDisplay').textContent = storeSettings.storeName || 'My Store 🌸'; }
-
-/* ─── SAVE RECEIPT IMAGE ─── */
-function saveReceiptImage(){
-  const el = document.getElementById('receiptContent');
-  const btn = document.querySelector('#receiptModal .btn-save');
-  btn.textContent='⏳ กำลังบันทึก...'; btn.disabled=true;
-  if(!window.htmlToImage){
-    const sc=document.createElement('script');
-    sc.src='https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js';
-    sc.onload=()=>doCapture(el,btn);
-    document.head.appendChild(sc);
-  } else { doCapture(el,btn); }
-}
-function doCapture(el,btn){
-  htmlToImage.toPng(el, { backgroundColor: '#ffffff', pixelRatio: 3, style: { margin: '0' } })
-  .then(dataUrl => {
-    const link=document.createElement('a');
-    link.download='receipt_'+Date.now()+'.png';
-    link.href=dataUrl;
-    link.click();
-    btn.textContent='📥 บันทึกรูป'; btn.disabled=false;
-    showToast('✅ บันทึกรูปแล้ว');
-  }).catch(err => {
-    btn.textContent='📥 บันทึกรูป'; btn.disabled=false;
-    alert('ไม่สามารถบันทึกรูปได้ (ลิงก์รูปภาพอาจมีการป้องกันการดึงรูปข้ามเว็บ แนะนำให้ใช้ imgbb.com ในการฝากรูปครับ)'); 
-  });
-}
 
 function switchTab(tab) {
   currentTab = tab;
@@ -541,7 +509,6 @@ function buildReceiptHTML(rec){
   const s=storeSettings;
   const d=new Date(rec.timeObj), dateStr=`${d.getDate().toString().padStart(2,'0')}-${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]}-${d.getFullYear()}`, timeStr=`${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
   
-  // 🌟 ลบ Proxy ออกแล้ว เรียกใช้ URL รูปภาพตรงๆ
   const logoHTML = s.logoData ? `<div class="rp-logo"><img src="${s.logoData}" alt="logo" crossorigin="anonymous"></div>` : '';
   const qrHTML = s.qrData ? `<div class="rp-qr"><img src="${s.qrData}" alt="QR" crossorigin="anonymous"><div class="rp-qr-label">สแกนเพื่อชำระเงิน</div></div>` : '';
   
@@ -556,7 +523,37 @@ function buildReceiptHTML(rec){
     ${s.paymentInfo?`<div class="rp-payment-info">${s.paymentInfo.replace(/\n/g,'<br>')}</div>`:''}${qrHTML}${s.footer?`<div class="rp-footer">${s.footer.replace(/\n/g,'<br>')}</div>`:''}`;
 }
 
-function showReceipt(rec){ document.getElementById('receiptContent').innerHTML=buildReceiptHTML(rec); document.getElementById('receiptModal').classList.add('open'); }
+/* ── สร้างใบเสร็จแล้วโชว์เป็นภาพให้ลูกค้ากดค้างเพื่อ Save ทันที ── */
+function showReceipt(rec){ 
+  const wrapper = document.getElementById('receiptContent');
+  
+  // 1. ใส่ HTML ดิบลงไปเพื่อเตรียมวาดภาพ
+  wrapper.innerHTML = `
+    <div class="receipt-preview" id="receiptRaw">${buildReceiptHTML(rec)}</div>
+    <div id="receiptLoading" style="text-align:center; padding:30px 10px; font-weight:700; color:var(--brown);">
+      ⏳ กำลังสร้างรูปภาพใบเสร็จ...
+    </div>
+  `;
+  document.getElementById('receiptModal').classList.add('open');
+
+  const rawEl = document.getElementById('receiptRaw');
+  
+  // 2. ให้เวลาหน้าเว็บดึงฟอนต์และรูปให้เสร็จสักครู่ แล้วสั่งแคปรูป
+  setTimeout(() => {
+    htmlToImage.toPng(rawEl, { backgroundColor: '#ffffff', pixelRatio: 3, style: { margin: '0' } })
+    .then(dataUrl => {
+      // 3. เมื่อแปลงรูปเสร็จ ให้ลบ HTML เก่าทิ้ง แล้วเอา <img> ไปแทนที่ลูกค้ากดเซฟได้เลย
+      wrapper.innerHTML = `
+        <img src="${dataUrl}" style="width:100%; border-radius:12px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); display:block;">
+        <div style="text-align:center; background:#fff0f4; border: 1.5px dashed var(--pink-btn); color:var(--red); margin-top:14px; padding:12px; border-radius:12px; font-weight:700; font-size:.85rem;">
+          👇 กดค้างที่รูปใบเสร็จเพื่อบันทึกลงเครื่อง 👇
+        </div>
+      `;
+    }).catch(err => {
+      document.getElementById('receiptLoading').textContent = '❌ สร้างรูปไม่สำเร็จ (ลิงก์รูปอาจมีการบล็อกความปลอดภัย)';
+    });
+  }, 400); // ดีเลย์ 0.4 วิ เพื่อให้ภาพและฟอนต์โหลดเสถียร
+}
 
 function renderHistory(){
   document.getElementById('historyList').innerHTML=!salesHistory.length?'<div style="text-align:center;padding:40px;color:var(--muted);font-weight:600">ยังไม่มีประวัติการขาย 🌿</div>':salesHistory.map(h=>`
