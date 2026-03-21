@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>My Store 🌸</title>
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Mitr:wght@300;400;500&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Mitr:wght@300;400;500&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
 <style>
 :root {
   --bg:#fef8f2; --bg2:#fff4f8; --surface:#ffffff; --surface2:#fdf5f0;
@@ -113,7 +113,7 @@ body {
 .sum-row{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:var(--muted);margin-bottom:8px;font-weight:600;}
 .sum-row.total{font-size:1rem;color:var(--brown);font-weight:700;padding-top:10px;margin-top:4px;border-top:1.5px dashed var(--border);margin-bottom:12px;}
 .sum-row.total .total-val{font-size:1.15rem;}
-.disc-input{width:88px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:5px 10px;color:var(--text);text-align:right;}
+.disc-input{width:88px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:5px 10px;color:var(--text);text-align:right;outline:none;}
 .btn-checkout{width:100%;padding:15px;background:linear-gradient(135deg,var(--pink-btn),#e891aa);color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;}
 .btn-checkout:disabled{opacity:.38;}
 
@@ -139,7 +139,7 @@ body {
 .logo-upload-wrap{display:flex;align-items:center;gap:12px;}
 .logo-preview{width:60px;height:60px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;overflow:hidden;}
 .logo-preview img{width:100%;height:100%;object-fit:cover;}
-.btn-upload{background:var(--lav-soft);border:1.5px solid var(--lav);border-radius:10px;color:var(--brown);padding:8px 14px;font-weight:700;cursor:pointer;}
+.btn-upload{background:var(--lav-soft);border:1.5px solid var(--lav);border-radius:10px;color:var(--brown);padding:8px 14px;font-weight:700;cursor:pointer;border:none;}
 .qr-preview{width:80px;height:80px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:2rem;overflow:hidden;}
 .qr-preview img{width:100%;height:100%;object-fit:cover;}
 .qr-upload-wrap{display:flex;align-items:flex-start;gap:12px;}
@@ -374,7 +374,6 @@ body {
 /* ═══════════════════════════════════════════════════════
    GAS API LAYER
 ═══════════════════════════════════════════════════════ */
-// 👇👇 นำ URL Web App ของคุณมาใส่ในเครื่องหมายคำพูดด้านล่างนี้ 👇👇
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwuFbOT-dKNP9qaxGBFinU_7WOvcCNmECp3Q3oYoF-0Jc-RW9QqBWreoBKJ9EMKBavq/exec"; 
 
 function gasCall(action, payload = null) {
@@ -553,9 +552,12 @@ async function checkout(){
 function buildReceiptHTML(rec){
   const s=storeSettings;
   const d=new Date(rec.timeObj), dateStr=`${d.getDate().toString().padStart(2,'0')}-${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]}-${d.getFullYear()}`, timeStr=`${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
-  // สังเกตการเพิ่ม crossorigin="anonymous" เพื่อช่วยเวลาโหลดรูปลง Canvas
-  const logoHTML = s.logoData ? `<div class="rp-logo"><img src="${s.logoData}" alt="logo" crossorigin="anonymous"></div>` : '';
-  const qrHTML = s.qrData ? `<div class="rp-qr"><img src="${s.qrData}" alt="QR" crossorigin="anonymous"><div class="rp-qr-label">สแกนเพื่อชำระเงิน</div></div>` : '';
+  
+  // Proxy เพื่อเลี่ยง CORS Error ตอนเรนเดอร์รูปที่ฝากไว้บน Drive
+  const getProxyUrl = (url) => url.startsWith('http') ? 'https://corsproxy.io/?' + encodeURIComponent(url) : url;
+
+  const logoHTML = s.logoData ? `<div class="rp-logo"><img src="${getProxyUrl(s.logoData)}" alt="logo" crossorigin="anonymous"></div>` : '';
+  const qrHTML = s.qrData ? `<div class="rp-qr"><img src="${getProxyUrl(s.qrData)}" alt="QR" crossorigin="anonymous"><div class="rp-qr-label">สแกนเพื่อชำระเงิน</div></div>` : '';
   
   return `${logoHTML}<div class="rp-title">${s.storeName||'My Store'}</div>
     ${s.storeDetail?`<div class="rp-subtitle">${s.storeDetail.replace(/\n/g,'<br>')}</div>`:''}${s.contact?`<div class="rp-contact">${s.contact.replace(/\n/g,'<br>')}</div>`:''}
@@ -567,6 +569,7 @@ function buildReceiptHTML(rec){
     <div class="rp-total-row"><span>TOTAL</span><span>${rec.total.toLocaleString('en',{minimumFractionDigits:2})}</span></div><hr class="rp-divider" style="margin:6px 0">
     ${s.paymentInfo?`<div class="rp-payment-info">${s.paymentInfo.replace(/\n/g,'<br>')}</div>`:''}${qrHTML}${s.footer?`<div class="rp-footer">${s.footer.replace(/\n/g,'<br>')}</div>`:''}`;
 }
+
 function showReceipt(rec){ document.getElementById('receiptContent').innerHTML=buildReceiptHTML(rec); document.getElementById('receiptModal').classList.add('open'); }
 
 function renderHistory(){
@@ -598,7 +601,7 @@ function loadSettingsForm(){
 }
 async function saveSettings(){
   ['storeName','storeDetail','contact','paymentInfo','footer'].forEach(k=>storeSettings[k]=document.getElementById('s'+k.charAt(0).toUpperCase()+k.slice(1)).value.trim());
-  showLoading('กำลังบันทึก (ระบบกำลังอัปโหลดรูปภาพลง Drive อาจใช้เวลาสักครู่)...');
+  showLoading('กำลังบันทึก (ระบบกำลังอัปโหลดรูปลง Drive อาจใช้เวลาสักครู่)...');
   try{ 
     storeSettings = await gasCall('saveSettings', storeSettings); 
     updateHeaderName(); loadSettingsForm(); showToast('✅ บันทึกแล้ว'); 
