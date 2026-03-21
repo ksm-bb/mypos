@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>My Store 🌸</title>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Mitr:wght@300;400;500&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 <style>
 :root {
   --bg:#fef8f2; --bg2:#fff4f8; --surface:#ffffff; --surface2:#fdf5f0;
@@ -22,31 +21,28 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 
-/* ── LAYOUT แก้อาการล็อคจอ เลื่อนไม่ไป ── */
-html {
-  background: #d1d5db; /* สีพื้นหลังตอนเปิดบนคอม */
-}
-body {
+/* ── LAYOUT แสดงผลเต็มจอ ไม่มีกรอบ ── */
+html, body {
   width: 100%;
-  max-width: 430px; /* ขนาดจอมือถือ */
-  margin: 0 auto;
-  height: 100dvh; /* ใช้ 100dvh ช่วยแก้ปัญหาบาร์ด้านล่างของ Safari */
-  position: relative;
-  background: var(--bg);
+  height: 100%;
+  background: var(--bg); /* เทสีพื้นหลังทั่วหน้าจอ */
   color: var(--text);
   font-family: 'Quicksand', sans-serif;
   font-size: 16px;
   overflow: hidden;
-  box-shadow: 0 0 30px rgba(0,0,0,0.15);
 }
 
-/* ทำให้ส่วนประกอบยึดติดอยู่แค่ในกรอบ 430px */
-.app-header { position: fixed; top: 0; left: 0; right: 0; margin: 0 auto; max-width: 430px; height: var(--header-h); background: var(--surface); border-bottom: 1.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 18px; z-index: 200; box-shadow: var(--shadow-sm); }
-.pages { position: fixed; top: var(--header-h); bottom: var(--nav-h); left: 0; right: 0; margin: 0 auto; max-width: 430px; overflow: hidden; }
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; max-width: 430px; height: var(--nav-h); background: var(--surface); border-top: 1.5px solid var(--border); display: flex; z-index: 200; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -2px 14px rgba(180,100,120,.07); }
-.order-overlay, .modal-overlay { position: fixed; inset: 0; left: 0; right: 0; margin: 0 auto; max-width: 430px; background: rgba(100,60,50,.3); backdrop-filter: blur(3px); z-index: 300; display: none; align-items: flex-end; }
+.main-container {
+  width: 100%;
+  max-width: 430px; /* จำกัดความกว้างเพื่อความสวยงาม */
+  margin: 0 auto;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
 
-/* ── HEADER MISC ── */
+/* ── HEADER ── */
+.app-header{position:absolute;top:0;left:0;right:0;height:var(--header-h);background:var(--surface);border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;z-index:200;}
 .header-left{display:flex;flex-direction:column;gap:1px;}
 .store-name-display{font-size:1.05rem;font-weight:700;color:var(--brown);}
 .clock{font-size:0.68rem;color:var(--muted);font-weight:500;}
@@ -54,10 +50,13 @@ body {
 .cart-btn:active{transform:scale(.93);}
 .cart-badge{position:absolute;top:-5px;right:-5px;background:var(--pink-btn);color:#fff;font-size:.6rem;font-weight:700;min-width:17px;height:17px;border-radius:99px;display:none;align-items:center;justify-content:center;padding:0 4px;border:1.5px solid #fff;}
 
-/* ── PAGES & SCROLL ── */
+/* ── PAGES ── */
+.pages{position:absolute;top:var(--header-h);bottom:var(--nav-h);left:0;right:0;overflow:hidden;}
 .page{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;padding:16px 14px 8px;}
 .page.active{display:block;}
 
+/* ── BOTTOM NAV ── */
+.bottom-nav{position:absolute;bottom:0;left:0;right:0;height:var(--nav-h);background:var(--surface);border-top:1.5px solid var(--border);display:flex;z-index:200;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -2px 14px rgba(180,100,120,.07);}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--muted);transition:color .15s;padding:8px 0;}
 .nav-item.active{color:var(--brown);}
 .nav-icon{font-size:1.25rem;line-height:1;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:12px;transition:background .15s;}
@@ -81,6 +80,7 @@ body {
 .product-price{font-size:.8rem;font-weight:700;color:var(--brown);}
 
 /* ── OVERLAYS & MODALS ── */
+.order-overlay, .modal-overlay{position:absolute;inset:0;background:rgba(100,60,50,.3);backdrop-filter:blur(3px);z-index:300;display:none;align-items:flex-end;}
 .order-overlay.open, .modal-overlay.open{display:flex;}
 .order-sheet, .modal{width:100%;max-height:90vh;background:var(--surface);border-radius:24px 24px 0 0;display:flex;flex-direction:column;animation:sheetUp .26s cubic-bezier(.34,1.2,.64,1);padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -6px 30px rgba(180,100,120,.12);}
 @keyframes sheetUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
@@ -102,14 +102,15 @@ body {
 .sum-row{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:var(--muted);margin-bottom:8px;font-weight:600;}
 .sum-row.total{font-size:1rem;color:var(--brown);font-weight:700;padding-top:10px;margin-top:4px;border-top:1.5px dashed var(--border);margin-bottom:12px;}
 .sum-row.total .total-val{font-size:1.15rem;}
-.disc-input{width:88px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:5px 10px;color:var(--text);text-align:right;outline:none;}
+.disc-input{width:88px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:5px 10px;color:var(--text);text-align:right;}
 .btn-checkout{width:100%;padding:15px;background:linear-gradient(135deg,var(--pink-btn),#e891aa);color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;}
 .btn-checkout:disabled{opacity:.38;}
 
 /* ── SETTINGS & MISC ── */
 .page-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
 .page-title{font-size:.78rem;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;}
-.hist-item{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:13px 15px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.hist-item{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:13px 15px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px; transition: background .15s; cursor: pointer;}
+.hist-item:hover { background: var(--lav-soft); }
 .hist-time{font-size:.68rem;color:var(--muted);font-weight:500;margin-bottom:3px;}
 .hist-items{font-size:.82rem;font-weight:600;color:var(--text);line-height:1.4;}
 .hist-total{font-size:1rem;font-weight:700;color:var(--brown);}
@@ -149,6 +150,7 @@ body {
   background:#fff; border-radius:12px; padding:22px 20px;
   border:1.5px solid var(--border); font-family:'Sarabun',sans-serif;
   color:#333; font-size:13px; line-height:1.7; position: relative;
+  overflow: hidden; /* สำหรับ Animation หยัก */
 }
 .rp-logo { text-align:center; margin-bottom:6px; }
 .rp-logo img { max-width:70px; max-height:70px; border-radius:10px; }
@@ -183,10 +185,44 @@ body {
   font-weight:600;
 }
 .rp-footer { text-align:center; font-size:.75rem; color:#999; margin-top:14px; font-style:italic; }
+
+/* ── Animation สำหรับใบเสร็จเลื่อนลง ── */
+#receiptContent {
+  animation: receiptSlideDown 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes receiptSlideDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ── ขอบหยักๆ ของใบเสร็จ ── */
+.receipt-preview::before, .receipt-preview::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background-size: 20px 20px;
+  background-repeat: repeat-x;
+}
+.receipt-preview::before {
+  top: 0;
+  background-image: linear-gradient(-45deg, #fff 10px, transparent 0), linear-gradient(45deg, #fff 10px, transparent 0);
+  margin-top: -10px; /* เพื่อให้ขอบหยักอยู่ด้านบน */
+}
+.receipt-preview::after {
+  bottom: 0;
+  background-image: linear-gradient(-45deg, transparent 10px, #fff 0), linear-gradient(45deg, transparent 10px, #fff 0);
+  margin-bottom: -10px; /* เพื่อให้ขอบหยักอยู่ด้านล่าง */
+}
+
 ::-webkit-scrollbar{display: none;}
 </style>
 </head>
 <body>
+
+<div class="main-container">
 
 <header class="app-header">
   <div class="header-left">
@@ -346,17 +382,18 @@ body {
     <div id="receiptContent">
       </div>
     <div class="modal-btns" style="margin-top:16px">
-      <button class="btn-cancel" style="width:100%;" onclick="document.getElementById('receiptModal').classList.remove('open')">ปิด</button>
+      <button class="btn-cancel" style="width:100%;" onclick="closeReceiptModal()">ปิด</button>
     </div>
   </div>
 </div>
 
 <div class="save-toast" id="saveToast">✅ บันทึกแล้ว</div>
 
-<script>
+</div> <script>
 /* ═══════════════════════════════════════════════════════
    GAS API LAYER
 ═══════════════════════════════════════════════════════ */
+// 👇👇 นำ URL Web App ของคุณมาใส่ในเครื่องหมายคำพูดด้านล่างนี้ 👇👇
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzX2ORQjrgKIijKkBr5CD6vNL4rCb8p_bsAotGelsT8sTOjmUGvdFmiG9bY6lVP0Fy9/exec"; 
 
 function gasCall(action, payload = null) {
@@ -400,7 +437,7 @@ function showLoading(msg='กำลังโหลด...') {
     const style = document.createElement('style');
     style.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
     document.head.appendChild(style);
-    document.body.appendChild(el);
+    document.querySelector('.main-container').appendChild(el);
   }
   document.getElementById('loadingMsg').textContent = msg;
   el.style.display = 'flex';
@@ -408,7 +445,10 @@ function showLoading(msg='กำลังโหลด...') {
 function hideLoading() { const el = document.getElementById('loadingOverlay'); if (el) el.style.display = 'none'; }
 
 function updateClock() {
-  document.getElementById('clockDisplay').textContent = new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}) + ' น.';
+  const clock = document.getElementById('clockDisplay');
+  if (clock) {
+    clock.textContent = new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}) + ' น.';
+  }
 }
 setInterval(updateClock,1000); updateClock();
 
@@ -512,7 +552,8 @@ function buildReceiptHTML(rec){
   const logoHTML = s.logoData ? `<div class="rp-logo"><img src="${s.logoData}" alt="logo" crossorigin="anonymous"></div>` : '';
   const qrHTML = s.qrData ? `<div class="rp-qr"><img src="${s.qrData}" alt="QR" crossorigin="anonymous"><div class="rp-qr-label">สแกนเพื่อชำระเงิน</div></div>` : '';
   
-  return `${logoHTML}<div class="rp-title">${s.storeName||'My Store'}</div>
+  return `<div class="receipt-preview">
+    ${logoHTML}<div class="rp-title">${s.storeName||'My Store'}</div>
     ${s.storeDetail?`<div class="rp-subtitle">${s.storeDetail.replace(/\n/g,'<br>')}</div>`:''}${s.contact?`<div class="rp-contact">${s.contact.replace(/\n/g,'<br>')}</div>`:''}
     <hr class="rp-divider">${rec.orderId?`<div class="rp-meta-row"><span>Order ID :</span><span>${rec.orderId}</span></div>`:''}${rec.customerName?`<div class="rp-meta-row"><span>ลูกค้า :</span><span>${rec.customerName}</span></div>`:''}
     <div class="rp-meta-row"><span>Date : ${dateStr}</span><span>Time : ${timeStr}</span></div><hr class="rp-divider dashed"><div class="rp-items">
@@ -520,39 +561,19 @@ function buildReceiptHTML(rec){
     </div><hr class="rp-divider dashed"><div class="rp-subtotal-row"><span>Subtotal &nbsp; ${rec.items.length} items</span><span>${rec.subtotal.toLocaleString('en',{minimumFractionDigits:2})}</span></div>
     ${rec.discount>0?`<div class="rp-payment-row"><span>Discount</span><span>-${rec.discount.toLocaleString('en',{minimumFractionDigits:2})}</span></div>`:''}<hr class="rp-divider" style="margin:6px 0">
     <div class="rp-total-row"><span>TOTAL</span><span>${rec.total.toLocaleString('en',{minimumFractionDigits:2})}</span></div><hr class="rp-divider" style="margin:6px 0">
-    ${s.paymentInfo?`<div class="rp-payment-info">${s.paymentInfo.replace(/\n/g,'<br>')}</div>`:''}${qrHTML}${s.footer?`<div class="rp-footer">${s.footer.replace(/\n/g,'<br>')}</div>`:''}`;
+    ${s.paymentInfo?`<div class="rp-payment-info">${s.paymentInfo.replace(/\n/g,'<br>')}</div>`:''}${qrHTML}${s.footer?`<div class="rp-footer">${s.footer.replace(/\n/g,'<br>')}</div>`:''}
+  </div>`;
 }
 
-/* ── สร้างใบเสร็จแล้วโชว์เป็นภาพให้ลูกค้ากดค้างเพื่อ Save ทันที ── */
 function showReceipt(rec){ 
-  const wrapper = document.getElementById('receiptContent');
-  
-  // 1. ใส่ HTML ดิบลงไปเพื่อเตรียมวาดภาพ
-  wrapper.innerHTML = `
-    <div class="receipt-preview" id="receiptRaw">${buildReceiptHTML(rec)}</div>
-    <div id="receiptLoading" style="text-align:center; padding:30px 10px; font-weight:700; color:var(--brown);">
-      ⏳ กำลังสร้างรูปภาพใบเสร็จ...
-    </div>
-  `;
-  document.getElementById('receiptModal').classList.add('open');
+  document.getElementById('receiptContent').innerHTML=buildReceiptHTML(rec); 
+  document.getElementById('receiptModal').classList.add('open'); 
+  // ใส่เสียงเล็กน้อยถ้าต้องการ
+  // new Audio('receipt.mp3').play();
+}
 
-  const rawEl = document.getElementById('receiptRaw');
-  
-  // 2. ให้เวลาหน้าเว็บดึงฟอนต์และรูปให้เสร็จสักครู่ แล้วสั่งแคปรูป
-  setTimeout(() => {
-    htmlToImage.toPng(rawEl, { backgroundColor: '#ffffff', pixelRatio: 3, style: { margin: '0' } })
-    .then(dataUrl => {
-      // 3. เมื่อแปลงรูปเสร็จ ให้ลบ HTML เก่าทิ้ง แล้วเอา <img> ไปแทนที่ลูกค้ากดเซฟได้เลย
-      wrapper.innerHTML = `
-        <img src="${dataUrl}" style="width:100%; border-radius:12px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); display:block;">
-        <div style="text-align:center; background:#fff0f4; border: 1.5px dashed var(--pink-btn); color:var(--red); margin-top:14px; padding:12px; border-radius:12px; font-weight:700; font-size:.85rem;">
-          👇 กดค้างที่รูปใบเสร็จเพื่อบันทึกลงเครื่อง 👇
-        </div>
-      `;
-    }).catch(err => {
-      document.getElementById('receiptLoading').textContent = '❌ สร้างรูปไม่สำเร็จ (ลิงก์รูปอาจมีการบล็อกความปลอดภัย)';
-    });
-  }, 400); // ดีเลย์ 0.4 วิ เพื่อให้ภาพและฟอนต์โหลดเสถียร
+function closeReceiptModal() {
+  document.getElementById('receiptModal').classList.remove('open');
 }
 
 function renderHistory(){
