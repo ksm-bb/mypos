@@ -434,7 +434,7 @@ textarea.form-input{resize:none;height:72px;line-height:1.5;}
 ═══════════════════════════════════════════════════════ */
 const GAS_URL = (typeof google !== 'undefined')
   ? '<?= ScriptApp.getService().getUrl() ?>'   // auto-inject ใน GAS
-  : 'https://script.google.com/macros/s/AKfycbxT7K--0Hu1CGCc2f6ZeXK9axrQVQBFT2-RgJZOmU0WoM1kefmX-UAreZbhHxhIBGEw/exec';              // ← แก้ตอนใช้งานนอก GAS
+  : 'https://script.google.com/macros/s/AKfycbxT7K--0Hu1CGCc2f6ZeXK9axrQVQBFT2-RgJZOmU0WoM1kefmX-UAreZbhHxhIBGEw/exec';
 
 async function gasCall(action, payload = null) {
   // ใช้ GET + query params แทน POST เพื่อหลีกเลี่ยง CORS
