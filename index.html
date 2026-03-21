@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>My Store 🌸</title>
+<title>My Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Mitr:wght@300;400;500&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 <style>
@@ -22,24 +22,12 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 
-/* ── LAYOUT แสดงผลเต็มจอ ไม่มีกรอบ แต่ล็อกความกว้าง ── */
+/* ── LAYOUT ── */
 html, body {
-  width: 100%;
-  height: 100%;
-  background: var(--bg); /* เทสีพื้นหลังทั่วหน้าจอ */
-  color: var(--text);
-  font-family: 'Quicksand', sans-serif;
-  font-size: 16px;
-  overflow: hidden;
+  width: 100%; height: 100%; background: var(--bg); color: var(--text); font-family: 'Quicksand', sans-serif; font-size: 16px; overflow: hidden;
 }
-
 .main-container {
-  width: 100%;
-  max-width: 430px; /* จำกัดความกว้างเพื่อความสวยงาม */
-  margin: 0 auto;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
+  width: 100%; max-width: 430px; margin: 0 auto; height: 100%; position: relative; overflow: hidden;
 }
 
 /* ── HEADER ── */
@@ -47,7 +35,7 @@ html, body {
 .header-left{display:flex;flex-direction:column;gap:1px;}
 .store-name-display{font-size:1.05rem;font-weight:700;color:var(--brown);}
 .clock{font-size:0.68rem;color:var(--muted);font-weight:500;}
-.cart-btn{position:relative;background:var(--lav-soft);border:1.5px solid var(--lav);border-radius:14px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;cursor:pointer;transition:all .18s;box-shadow:var(--shadow-sm);}
+.cart-btn{position:relative;background:var(--lav-soft);border:1.5px solid var(--lav);border-radius:14px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;color:var(--brown);cursor:pointer;transition:all .18s;box-shadow:var(--shadow-sm);}
 .cart-btn:active{transform:scale(.93);}
 .cart-badge{position:absolute;top:-5px;right:-5px;background:var(--pink-btn);color:#fff;font-size:.6rem;font-weight:700;min-width:17px;height:17px;border-radius:99px;display:none;align-items:center;justify-content:center;padding:0 4px;border:1.5px solid #fff;}
 
@@ -60,14 +48,16 @@ html, body {
 .bottom-nav{position:absolute;bottom:0;left:0;right:0;height:var(--nav-h);background:var(--surface);border-top:1.5px solid var(--border);display:flex;z-index:200;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -2px 14px rgba(180,100,120,.07);}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--muted);transition:color .15s;padding:8px 0;}
 .nav-item.active{color:var(--brown);}
-.nav-icon{font-size:1.25rem;line-height:1;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:12px;transition:background .15s;}
+.nav-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:12px;transition:background .15s;}
 .nav-item.active .nav-icon{background:var(--pink);}
 .nav-label{font-size:.6rem;font-weight:600;letter-spacing:.3px;}
 
 /* ── SEARCH & CAT ── */
 .search-wrap{display:flex;gap:8px;margin-bottom:14px;}
-.search-input{flex:1;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:10px 14px;color:var(--text);font-family:'Quicksand',sans-serif;font-size:.88rem;font-weight:500;outline:none;box-shadow:var(--shadow-sm);}
-.btn-plus{background:var(--pink-btn);color:#fff;border:none;border-radius:14px;width:44px;font-size:1.4rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.search-input-wrapper{flex:1;position:relative;display:flex;align-items:center;}
+.search-icon{position:absolute;left:14px;color:var(--muted); pointer-events:none;}
+.search-input{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:10px 14px 10px 38px;color:var(--text);font-family:'Quicksand',sans-serif;font-size:.88rem;font-weight:500;outline:none;box-shadow:var(--shadow-sm);}
+.btn-plus{background:var(--pink-btn);color:#fff;border:none;border-radius:14px;width:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;}
 .cat-scroll{display:flex;gap:7px;overflow-x:auto;margin-bottom:14px;padding-bottom:2px;scrollbar-width:none;}
 .cat-scroll::-webkit-scrollbar{display:none;}
 .cat-pill{padding:6px 16px;border-radius:99px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;}
@@ -75,7 +65,7 @@ html, body {
 
 /* ── PRODUCT GRID ── */
 .product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.product-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 10px 10px;cursor:pointer;position:relative;overflow:hidden;box-shadow:var(--shadow-sm);}
+.product-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 10px 10px;cursor:pointer;position:relative;overflow:hidden;box-shadow:var(--shadow-sm); -webkit-touch-callout: none; user-select: none;}
 .product-color{width:32px;height:32px;border-radius:10px;margin-bottom:8px;}
 .product-name{font-size:.78rem;font-weight:700;line-height:1.35;margin-bottom:5px;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .product-price{font-size:.8rem;font-weight:700;color:var(--brown);}
@@ -87,7 +77,7 @@ html, body {
 @keyframes sheetUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
 .sheet-knob{width:38px;height:4px;border-radius:2px;background:var(--border);margin:13px auto 10px;flex-shrink:0;}
 .sheet-header{display:flex;justify-content:space-between;align-items:center;padding:0 18px 13px;border-bottom:1.5px solid var(--border);flex-shrink:0;}
-.sheet-title{font-size:.88rem;font-weight:700;color:var(--brown);}
+.sheet-title{font-size:.88rem;font-weight:700;color:var(--brown);display:flex;align-items:center;gap:6px;}
 .btn-clear-order{font-size:.75rem;color:var(--red);background:none;border:none;font-weight:600;}
 .sheet-items{flex:1;overflow-y:auto;padding:10px 14px;}
 .order-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;margin-bottom:7px;background:var(--surface2);border:1px solid var(--border);}
@@ -104,7 +94,7 @@ html, body {
 .sum-row.total{font-size:1rem;color:var(--brown);font-weight:700;padding-top:10px;margin-top:4px;border-top:1.5px dashed var(--border);margin-bottom:12px;}
 .sum-row.total .total-val{font-size:1.15rem;}
 .disc-input{width:88px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:5px 10px;color:var(--text);text-align:right;outline:none;}
-.btn-checkout{width:100%;padding:15px;background:linear-gradient(135deg,var(--pink-btn),#e891aa);color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;}
+.btn-checkout{width:100%;padding:15px;background:linear-gradient(135deg,var(--pink-btn),#e891aa);color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
 .btn-checkout:disabled{opacity:.38;}
 
 /* ── SETTINGS & MISC ── */
@@ -128,25 +118,24 @@ html, body {
 .form-label{display:block;font-size:.75rem;font-weight:700;color:var(--muted);margin-bottom:6px;}
 .form-input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:10px 13px;color:var(--text);font-family:'Quicksand',sans-serif;font-size:.9rem;font-weight:500;outline:none;}
 .logo-upload-wrap{display:flex;align-items:center;gap:12px;}
-.logo-preview{width:60px;height:60px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;overflow:hidden;flex-shrink:0;}
+.logo-preview{width:60px;height:60px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--muted);overflow:hidden;flex-shrink:0;}
 .logo-preview img{width:100%;height:100%;object-fit:cover;}
-.qr-preview{width:80px;height:80px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:2rem;overflow:hidden;flex-shrink:0;}
+.qr-preview{width:80px;height:80px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--muted);overflow:hidden;flex-shrink:0;}
 .qr-preview img{width:100%;height:100%;object-fit:cover;}
-.qr-upload-right{flex:1;}
-.btn-save-settings{width:100%;padding:14px;background:linear-gradient(135deg,var(--pink-btn),#e891aa);color:#fff;border:none;border-radius:14px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:4px;}
+.btn-save-settings{width:100%;padding:14px;background:linear-gradient(135deg,var(--pink-btn),#e891aa);color:#fff;border:none;border-radius:14px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:6px;}
 
 .save-toast{position:absolute;bottom:calc(var(--nav-h) + 14px);left:50%;transform:translateX(-50%);background:var(--brown);color:#fff;padding:10px 22px;border-radius:99px;font-size:.82rem;font-weight:700;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;}
 .save-toast.show{opacity:1;}
 .modal{padding:22px 18px; overflow-y:auto;}
-.modal h3{font-size:.95rem;font-weight:700;color:var(--brown);margin-bottom:18px;}
+.modal h3{font-size:.95rem;font-weight:700;color:var(--brown);margin-bottom:18px;display:flex;align-items:center;gap:6px;}
 .color-row{display:flex;gap:9px;flex-wrap:wrap;}
 .swatch{width:34px;height:34px;border-radius:11px;cursor:pointer;border:2.5px solid transparent;}
 .swatch.selected{border-color:var(--brown);transform:scale(1.1);}
 .modal-btns{display:flex;gap:10px;margin-top:22px;}
-.btn-save{flex:1;background:linear-gradient(135deg,var(--pink-btn),#e891aa);color:#fff;border:none;border-radius:14px;padding:14px;font-weight:700;cursor:pointer;}
+.btn-save{flex:1;background:linear-gradient(135deg,var(--pink-btn),#e891aa);color:#fff;border:none;border-radius:14px;padding:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
 .btn-cancel{flex:1;background:var(--surface2);border:1.5px solid var(--border);color:var(--muted);border-radius:14px;padding:14px;font-weight:600;cursor:pointer;}
 
-/* ── RECEIPT PREVIEW (ขอบหยัก) ── */
+/* ── RECEIPT PREVIEW ── */
 .receipt-preview {
   background:#fff; border-radius:12px; padding:22px 20px;
   border:1.5px solid var(--border); font-family:'Sarabun',sans-serif;
@@ -192,14 +181,9 @@ html, body {
   content: ''; position: absolute; left: 0; width: 100%; height: 10px;
   background-size: 20px 20px; background-repeat: repeat-x;
 }
-.receipt-preview::before {
-  top: 0; background-image: linear-gradient(-45deg, #fff 10px, transparent 0), linear-gradient(45deg, #fff 10px, transparent 0); margin-top: -10px; 
-}
-.receipt-preview::after {
-  bottom: 0; background-image: linear-gradient(-45deg, transparent 10px, #fff 0), linear-gradient(45deg, transparent 10px, #fff 0); margin-bottom: -10px; 
-}
+.receipt-preview::before { top: 0; background-image: linear-gradient(-45deg, #fff 10px, transparent 0), linear-gradient(45deg, #fff 10px, transparent 0); margin-top: -10px; }
+.receipt-preview::after { bottom: 0; background-image: linear-gradient(-45deg, transparent 10px, #fff 0), linear-gradient(45deg, transparent 10px, #fff 0); margin-bottom: -10px; }
 
-/* ── แอนิเมชันตอนโหลดภาพ ── */
 @keyframes pulseHint {
   0% { transform: scale(1); box-shadow: 0 0 0 rgba(244,167,185,0.4); }
   50% { transform: scale(1.02); box-shadow: 0 0 10px rgba(244,167,185,0.8); }
@@ -215,11 +199,12 @@ html, body {
 
 <header class="app-header">
   <div class="header-left">
-    <span class="store-name-display" id="storeNameDisplay">My Store 🌸</span>
+    <span class="store-name-display" id="storeNameDisplay">My Store</span>
     <span class="clock" id="clockDisplay"></span>
   </div>
   <div class="cart-btn" onclick="openOrderSheet()">
-    🧺<span class="cart-badge" id="cartBadge"></span>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+    <span class="cart-badge" id="cartBadge"></span>
   </div>
 </header>
 
@@ -227,8 +212,13 @@ html, body {
 
   <div class="page active" id="page-pos">
     <div class="search-wrap">
-      <input class="search-input" id="searchInput" placeholder="🔍  ค้นหาสินค้า..." oninput="filterProducts()">
-      <button class="btn-plus" onclick="openAddModal()">+</button>
+      <div class="search-input-wrapper">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input class="search-input" id="searchInput" placeholder="ค้นหาสินค้า..." oninput="filterProducts()">
+      </div>
+      <button class="btn-plus" onclick="openAddModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      </button>
     </div>
     <div class="cat-scroll" id="categoryList"></div>
     <div class="product-grid" id="productGrid"></div>
@@ -238,7 +228,7 @@ html, body {
   <div class="page" id="page-history">
     <div class="page-top">
       <span class="page-title">ประวัติการขาย</span>
-      <button class="btn-sm" style="background:none;border:none;color:var(--red);" onclick="clearHistory()">ล้างทั้งหมด</button>
+      <button class="btn-sm" style="background:none;border:none;color:var(--red);font-weight:600;cursor:pointer;" onclick="clearHistory()">ล้างทั้งหมด</button>
     </div>
     <div id="historyList"></div>
   </div>
@@ -255,11 +245,16 @@ html, body {
     <div class="page-top"><span class="page-title">ตั้งค่าร้านค้า</span></div>
 
     <div class="settings-section">
-      <div class="settings-section-title">🏪 ข้อมูลร้านค้า</div>
+      <div class="settings-section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> 
+        ข้อมูลร้านค้า
+      </div>
       <div class="form-group">
         <label class="form-label">ลิงก์รูปภาพโลโก้</label>
         <div class="logo-upload-wrap">
-          <div class="logo-preview" id="logoPreview"><span>🌸</span></div>
+          <div class="logo-preview" id="logoPreview">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          </div>
           <div style="flex:1;">
             <input class="form-input" type="text" id="sLogoUrl" placeholder="วางลิงก์รูป (เช่น https://...)" oninput="updateLogoPreview()" style="margin-bottom: 5px;">
             <button onclick="clearLogo()" style="font-size:.68rem;color:var(--red);background:none;border:none;cursor:pointer;font-weight:600;">ลบลิงก์รูป</button>
@@ -281,11 +276,16 @@ html, body {
     </div>
 
     <div class="settings-section">
-      <div class="settings-section-title">💳 ข้อมูลการชำระเงิน</div>
+      <div class="settings-section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+        ข้อมูลการชำระเงิน
+      </div>
       <div class="form-group">
         <label class="form-label">ลิงก์รูปภาพ QR Code</label>
         <div class="qr-upload-wrap">
-          <div class="qr-preview" id="qrPreview"><span>📱</span></div>
+          <div class="qr-preview" id="qrPreview">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+          </div>
           <div class="qr-upload-right">
             <input class="form-input" type="text" id="sQrUrl" placeholder="วางลิงก์ QR (เช่น https://...)" oninput="updateQrPreview()" style="margin-bottom: 5px;">
             <button onclick="clearQr()" style="font-size:.68rem;color:var(--red);background:none;border:none;cursor:pointer;font-weight:600;">ลบลิงก์รูป</button>
@@ -299,14 +299,20 @@ html, body {
     </div>
 
     <div class="settings-section">
-      <div class="settings-section-title">✍️ ข้อความในบิล</div>
+      <div class="settings-section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+        ข้อความในบิล
+      </div>
       <div class="form-group">
         <label class="form-label">ข้อความปิดท้ายบิล</label>
         <textarea class="form-input" id="sFooter" placeholder="เช่น ขอบคุณที่มาอุดหนุน 🙏"></textarea>
       </div>
     </div>
 
-    <button class="btn-save-settings" onclick="saveSettings()">💾 บันทึกการตั้งค่า</button>
+    <button class="btn-save-settings" onclick="saveSettings()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+      บันทึกการตั้งค่า
+    </button>
     <div style="height:16px"></div>
   </div>
 
@@ -314,16 +320,16 @@ html, body {
 
 <nav class="bottom-nav">
   <div class="nav-item active" id="nav-pos" onclick="switchTab('pos')">
-    <div class="nav-icon">🛍️</div><div class="nav-label">ขาย</div>
+    <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></div><div class="nav-label">ขาย</div>
   </div>
   <div class="nav-item" id="nav-history" onclick="switchTab('history')">
-    <div class="nav-icon">🗒️</div><div class="nav-label">ประวัติ</div>
+    <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div><div class="nav-label">ประวัติ</div>
   </div>
   <div class="nav-item" id="nav-analysis" onclick="switchTab('analysis')">
-    <div class="nav-icon">📊</div><div class="nav-label">วิเคราะห์</div>
+    <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></div><div class="nav-label">วิเคราะห์</div>
   </div>
   <div class="nav-item" id="nav-settings" onclick="switchTab('settings')">
-    <div class="nav-icon">⚙️</div><div class="nav-label">ตั้งค่า</div>
+    <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div><div class="nav-label">ตั้งค่า</div>
   </div>
 </nav>
 
@@ -331,7 +337,10 @@ html, body {
   <div class="order-sheet">
     <div class="sheet-knob"></div>
     <div class="sheet-header">
-      <span class="sheet-title">🧺 ออเดอร์</span>
+      <span class="sheet-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg> 
+        ออเดอร์
+      </span>
       <button class="btn-clear-order" onclick="clearOrder()">ล้างทั้งหมด</button>
     </div>
     <div class="sheet-items" id="sheetItems"></div>
@@ -346,43 +355,63 @@ html, body {
         <input class="disc-input" type="number" id="discountInput" value="0" min="0" oninput="updateSummary()">
       </div>
       <div class="sum-row total"><span>รวมทั้งสิ้น</span><span class="total-val" id="grandTotal">฿0.00</span></div>
-      <button class="btn-checkout" id="checkoutBtn" onclick="checkout()" disabled>ชำระเงิน ✨</button>
+      <button class="btn-checkout" id="checkoutBtn" onclick="checkout()" disabled>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        ชำระเงิน
+      </button>
     </div>
   </div>
 </div>
 
 <div class="modal-overlay" id="productModal">
   <div class="modal">
-    <h3 id="modalTitle">✏️ เพิ่มสินค้า</h3>
+    <h3 id="modalTitle">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+      เพิ่มสินค้า
+    </h3>
     <div class="form-group"><label class="form-label">ชื่อสินค้า</label><input class="form-input" type="text" id="pName"></div>
     <div class="form-group"><label class="form-label">ราคา (฿)</label><input class="form-input" type="number" id="pPrice"></div>
     <div class="form-group"><label class="form-label">หมวดหมู่</label><input class="form-input" type="text" id="pCategory"></div>
     <div class="form-group"><label class="form-label">สีแท็ก</label><div class="color-row" id="colorSwatches"></div></div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
-      <button class="btn-save" onclick="saveProduct()">บันทึก</button>
+      <button class="btn-save" onclick="saveProduct()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        บันทึก
+      </button>
     </div>
   </div>
 </div>
 
 <div class="modal-overlay" id="receiptModal">
   <div class="modal">
-    <h3 style="text-align: center; margin-bottom: 14px;">🧾 ใบเสร็จ</h3>
-    <div id="receiptContent">
-      </div>
+    <h3 style="text-align: center; margin-bottom: 14px; justify-content: center;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16l4-2 4 2 4-2 4 2V4a2 2 0 0 0-2-2z"></path></svg>
+      ใบเสร็จ
+    </h3>
+    <div id="receiptContent"></div>
     <div class="modal-btns" style="margin-top:16px; display: flex; gap: 8px;">
       <button class="btn-cancel" onclick="closeReceiptModal()">ปิด</button>
-      <button class="btn-save" id="btnDownloadReceipt" onclick="saveReceiptImage()">📥 บันทึกรูป</button>
+      <button class="btn-save" id="btnDownloadReceipt" onclick="saveReceiptImage()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        บันทึกรูป
+      </button>
     </div>
   </div>
 </div>
 
-<div class="save-toast" id="saveToast">✅ บันทึกแล้ว</div>
+<div class="save-toast" id="saveToast">
+  <div style="display:flex;align-items:center;gap:6px;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span id="toastMsg">บันทึกแล้ว</span>
+  </div>
+</div>
 
 </div> <script>
 /* ═══════════════════════════════════════════════════════
    GAS API LAYER
 ═══════════════════════════════════════════════════════ */
+// อย่าลืมเปลี่ยน URL เป็นของคุณ
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzX2ORQjrgKIijKkBr5CD6vNL4rCb8p_bsAotGelsT8sTOjmUGvdFmiG9bY6lVP0Fy9/exec"; 
 
 function gasCall(action, payload = null) {
@@ -409,12 +438,12 @@ let products = [], salesHistory = [], storeSettings = {};
 let order = [], editId = null, selectedColor = '#f9c8d4';
 let activeCategory = 'ทั้งหมด', currentTab = 'pos';
 let orderCounter = 0;
-let currentReceiptDataUrl = null; // เก็บรูปล่าสุดที่วาดเสร็จ
+let currentReceiptDataUrl = null; 
 
 const COLORS = ['#f9c8d4','#f4d0f0','#c8d8f9','#b8e8cc','#fde49a','#ddd0f5','#fcd5b0','#c8e8f4','#f5c9a8','#d4f0df'];
 const DEFAULT_SETTINGS = {
-  storeName: 'My Store 🌸', storeDetail: 'ใบเสร็จรับเงินอย่างย่อ',
-  contact: '', paymentInfo: '', footer: 'ขอบคุณที่ใช้บริการ 🌸', logoData: '', qrData: ''
+  storeName: 'My Store', storeDetail: 'ใบเสร็จรับเงินอย่างย่อ',
+  contact: '', paymentInfo: '', footer: 'ขอบคุณที่ใช้บริการ', logoData: '', qrData: ''
 };
 
 function showLoading(msg='กำลังโหลด...') {
@@ -423,10 +452,12 @@ function showLoading(msg='กำลังโหลด...') {
     el = document.createElement('div');
     el.id = 'loadingOverlay';
     el.style.cssText = `position:absolute;inset:0;background:rgba(254,248,242,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-weight:700;color:var(--brown);backdrop-filter:blur(4px);border-radius:inherit;`;
-    el.innerHTML = `<div style="font-size:2rem;animation:spin 1s linear infinite">🌸</div><span id="loadingMsg" style="margin-top:10px"></span>`;
-    const style = document.createElement('style');
-    style.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
-    document.head.appendChild(style);
+    el.innerHTML = `
+      <svg class="spinner" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--brown)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite;">
+        <line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="4.93" x2="19.07" y2="7.76"></line>
+      </svg>
+      <span id="loadingMsg" style="margin-top:10px"></span>
+    `;
     document.querySelector('.main-container').appendChild(el);
   }
   document.getElementById('loadingMsg').textContent = msg;
@@ -442,7 +473,7 @@ function updateClock() {
 }
 setInterval(updateClock,1000); updateClock();
 
-function updateHeaderName() { document.getElementById('storeNameDisplay').textContent = storeSettings.storeName || 'My Store 🌸'; }
+function updateHeaderName() { document.getElementById('storeNameDisplay').textContent = storeSettings.storeName || 'My Store'; }
 
 function switchTab(tab) {
   currentTab = tab;
@@ -462,13 +493,51 @@ function renderCategories() {
   ).join('');
 }
 function setCategory(cat) { activeCategory=cat; renderCategories(); renderProducts(); }
+
+/* ── ระบบ Long Press (กดค้าง) ── */
+let pressTimer = null;
+let isLongPress = false;
+let touchStartY = 0;
+
+function startPress(e, id) {
+  isLongPress = false;
+  if(e && e.touches) touchStartY = e.touches[0].clientY;
+  pressTimer = setTimeout(() => {
+    isLongPress = true;
+    if (navigator.vibrate) navigator.vibrate(50); // สั่นเตือนเบาๆ
+    openEditModal(id);
+  }, 500); // กดค้าง 0.5 วินาที
+}
+
+function endPress(e, id) {
+  clearTimeout(pressTimer);
+  if (!isLongPress) {
+    addToOrder(id); // ถ้ากดสั้น ให้ลงตะกร้า
+  }
+}
+
+function cancelPress(e) {
+  if (e && e.touches) {
+    let moveY = e.touches[0].clientY;
+    if (Math.abs(moveY - touchStartY) > 10) clearTimeout(pressTimer); // ยกเลิกถ้านิ้วเลื่อน (Scroll)
+  } else {
+    clearTimeout(pressTimer);
+  }
+}
+
 function renderProducts() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   const list = products.filter(p=>(activeCategory==='ทั้งหมด'||p.category===activeCategory)&&p.name.toLowerCase().includes(q));
   document.getElementById('productGrid').innerHTML = !list.length
-    ? `<div style="grid-column:1/-1;color:var(--muted);text-align:center;padding:32px;font-weight:600">ไม่พบสินค้า 🌿</div>`
+    ? `<div style="grid-column:1/-1;color:var(--muted);text-align:center;padding:32px;font-weight:600;">ไม่พบสินค้า</div>`
     : list.map(p=>`
-      <div class="product-card" onclick="addToOrder(${p.id})">
+      <div class="product-card" 
+           onmousedown="startPress(event, ${p.id})" 
+           onmouseup="endPress(event, ${p.id})" 
+           onmouseleave="cancelPress(event)" 
+           ontouchstart="startPress(event, ${p.id})" 
+           ontouchend="endPress(event, ${p.id})" 
+           ontouchmove="cancelPress(event)">
         <div class="product-color" style="background:${p.color}"></div>
         <div class="product-name">${p.name}</div>
         <div class="product-price">฿${p.price.toLocaleString()}</div>
@@ -500,7 +569,7 @@ function updateCartBadge(){
 }
 function renderOrderSheet(){
   const el=document.getElementById('sheetItems');
-  if(!order.length){el.innerHTML=`<div class="empty-cart"><div class="ic">🧺</div><span>ยังไม่มีสินค้าในตะกร้า</span></div>`;return;}
+  if(!order.length){el.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px;gap:8px;color:var(--muted);"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.5"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg><span style="font-weight:600;font-size:.85rem;">ยังไม่มีสินค้าในตะกร้า</span></div>`;return;}
   el.innerHTML=order.map(item=>`
     <div class="order-item">
       <div class="oi-dot" style="background:${item.color}"></div>
@@ -532,7 +601,7 @@ async function checkout(){
     salesHistory.unshift(rec); if(salesHistory.length>200) salesHistory=salesHistory.slice(0,200);
     document.getElementById('orderOverlay').classList.remove('open');
     showReceipt(rec); clearOrder();
-  } catch(err) { showToast('❌ บันทึกไม่สำเร็จ'); document.getElementById('checkoutBtn').disabled = false; } finally { hideLoading(); }
+  } catch(err) { showToast('บันทึกไม่สำเร็จ'); document.getElementById('checkoutBtn').disabled = false; } finally { hideLoading(); }
 }
 
 function buildReceiptHTML(rec){
@@ -555,16 +624,14 @@ function buildReceiptHTML(rec){
   </div>`;
 }
 
-/* ── ระบบสร้างรูปภาพให้แตะค้าง + ฟังก์ชันปุ่มดาวน์โหลดสำหรับคอม ── */
 function showReceipt(rec){ 
   const wrapper = document.getElementById('receiptContent');
   const btnDownload = document.getElementById('btnDownloadReceipt');
   
   btnDownload.disabled = true;
-  btnDownload.textContent = '⏳ กำลังวาดใบเสร็จ...';
+  btnDownload.innerHTML = '<svg class="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite;"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="4.93" x2="19.07" y2="7.76"></line></svg> รอสักครู่...';
   currentReceiptDataUrl = null;
 
-  // นำ HTML ดิบใส่เข้าไปก่อนเพื่อเตรียมแคปรูป
   wrapper.innerHTML = `
     <div id="receiptRaw">${buildReceiptHTML(rec)}</div>
     <div id="receiptLoading" style="text-align:center; padding:30px 10px; font-weight:700; color:var(--brown);">
@@ -575,23 +642,21 @@ function showReceipt(rec){
 
   const rawEl = document.getElementById('receiptRaw');
   
-  // หน่วงเวลาเล็กน้อยเพื่อให้ฟอนต์และรูปโหลดเสร็จ 100%
   setTimeout(() => {
     htmlToImage.toPng(rawEl, { backgroundColor: '#ffffff', pixelRatio: 3, style: { margin: '0' } })
     .then(dataUrl => {
       currentReceiptDataUrl = dataUrl;
-      // ลบ HTML ดิบออก แล้วแทนที่ด้วยรูปภาพที่กดค้างเซฟได้ทันที!
       wrapper.innerHTML = `
         <img src="${dataUrl}" style="width:100%; border-radius:12px; display:block; box-shadow: 0 4px 14px rgba(0,0,0,0.08);">
-        <div style="text-align:center; background:#fff0f4; border: 1.5px dashed var(--pink-btn); color:var(--red); margin-top:14px; padding:12px; border-radius:12px; font-weight:700; font-size:.85rem; animation: pulseHint 2s infinite;">
+        <div style="text-align:center; background:#fff0f4; border: 1.5px dashed var(--pink-btn); color:var(--red); margin-top:14px; padding:12px; border-radius:12px; font-weight:700; font-size:.85rem;">
           👇 แตะค้างที่รูปใบเสร็จเพื่อเซฟลงเครื่องได้เลย 👇
         </div>
       `;
       btnDownload.disabled = false;
-      btnDownload.textContent = '📥 บันทึกรูป';
+      btnDownload.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> บันทึกรูป';
     }).catch(err => {
-      document.getElementById('receiptLoading').textContent = '❌ โหลดรูปไม่สำเร็จ (ตรวจสอบลิงก์รูปว่าฝากจากเว็บที่รองรับหรือไม่)';
-      btnDownload.textContent = '❌ ผิดพลาด';
+      document.getElementById('receiptLoading').textContent = 'โหลดรูปไม่สำเร็จ (ตรวจสอบลิงก์รูปภาพ)';
+      btnDownload.innerHTML = 'ผิดพลาด';
     });
   }, 400); 
 }
@@ -602,7 +667,7 @@ function saveReceiptImage(){
     link.download='receipt_'+Date.now()+'.png';
     link.href=currentReceiptDataUrl;
     link.click();
-    showToast('✅ บันทึกรูปลงคอมพิวเตอร์แล้ว');
+    showToast('บันทึกรูปแล้ว');
   }
 }
 
@@ -611,7 +676,7 @@ function closeReceiptModal() {
 }
 
 function renderHistory(){
-  document.getElementById('historyList').innerHTML=!salesHistory.length?'<div style="text-align:center;padding:40px;color:var(--muted);font-weight:600">ยังไม่มีประวัติการขาย 🌿</div>':salesHistory.map(h=>`
+  document.getElementById('historyList').innerHTML=!salesHistory.length?'<div style="display:flex;flex-direction:column;align-items:center;padding:40px;gap:8px;color:var(--muted);"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span style="font-weight:600;">ยังไม่มีประวัติการขาย</span></div>':salesHistory.map(h=>`
     <div class="hist-item" onclick="showReceipt(${JSON.stringify(h).replace(/"/g,'&quot;')})">
       <div><div class="hist-time">${h.orderId||''} · ${h.time}</div><div class="hist-items">${h.items.map(i=>`${i.name}×${i.qty}`).join(', ')}</div></div>
       <div class="hist-total">฿${h.total.toLocaleString()}</div>
@@ -620,7 +685,7 @@ function renderHistory(){
 async function clearHistory(){
   if(!confirm('ล้างประวัติทั้งหมด?'))return;
   showLoading('กำลังล้างประวัติ...');
-  try{ await gasCall('clearHistory'); salesHistory=[]; renderHistory(); showToast('✅ ล้างแล้ว'); }catch(e){showToast('❌ '+e.message);}finally{hideLoading();}
+  try{ await gasCall('clearHistory'); salesHistory=[]; renderHistory(); showToast('ล้างแล้ว'); }catch(e){showToast('ผิดพลาด');}finally{hideLoading();}
 }
 
 function renderAnalysis(){
@@ -628,19 +693,19 @@ function renderAnalysis(){
   salesHistory.forEach(h=>h.items.forEach(i=>{ if(!ps[i.name])ps[i.name]={qty:0,rev:0,color:i.color}; ps[i.name].qty+=i.qty; ps[i.name].rev+=i.price*i.qty; }));
   document.getElementById('statsGrid').innerHTML=`<div class="stat-card wide"><div class="stat-label">ยอดขายรวม</div><div class="stat-value">฿${tot.toLocaleString()}</div><div class="stat-sub">${salesHistory.length} ออเดอร์</div></div>`;
   const top=Object.entries(ps).sort((a,b)=>b[1].rev-a[1].rev).slice(0,5);
-  document.getElementById('topProducts').innerHTML=!top.length?'<div style="color:var(--muted);padding:16px 0;font-weight:600">ยังไม่มีข้อมูล 🌱</div>':top.map(([name,d],i)=>`
+  document.getElementById('topProducts').innerHTML=!top.length?'<div style="display:flex;flex-direction:column;align-items:center;padding:30px;gap:8px;color:var(--muted);"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg><span style="font-weight:600;">ยังไม่มีข้อมูล</span></div>':top.map(([name,d],i)=>`
     <div class="top-row"><div class="top-rank">#${i+1}</div><div class="top-dot" style="background:${d.color}"></div><div class="top-name">${name}</div><div class="top-qty">${d.qty} ชิ้น</div><div style="color:var(--green);font-weight:700">฿${d.rev.toLocaleString()}</div></div>`).join('');
 }
 
 function updateLogoPreview() {
   const url = document.getElementById('sLogoUrl').value.trim();
   storeSettings.logoData = url;
-  document.getElementById('logoPreview').innerHTML = url ? `<img src="${url}" crossorigin="anonymous">` : '<span>🌸</span>';
+  document.getElementById('logoPreview').innerHTML = url ? `<img src="${url}" crossorigin="anonymous">` : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
 }
 function updateQrPreview() {
   const url = document.getElementById('sQrUrl').value.trim();
   storeSettings.qrData = url;
-  document.getElementById('qrPreview').innerHTML = url ? `<img src="${url}" crossorigin="anonymous">` : '<span>📱</span>';
+  document.getElementById('qrPreview').innerHTML = url ? `<img src="${url}" crossorigin="anonymous">` : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
 }
 function clearLogo() { document.getElementById('sLogoUrl').value = ''; updateLogoPreview(); }
 function clearQr() { document.getElementById('sQrUrl').value = ''; updateQrPreview(); }
@@ -657,24 +722,24 @@ async function saveSettings(){
   storeSettings.logoData = document.getElementById('sLogoUrl').value.trim();
   storeSettings.qrData = document.getElementById('sQrUrl').value.trim();
   
-  showLoading('กำลังบันทึกการตั้งค่า...');
+  showLoading('กำลังบันทึก...');
   try{ 
     storeSettings = await gasCall('saveSettings', storeSettings); 
-    updateHeaderName(); showToast('✅ บันทึกแล้ว'); 
-  }catch(e){showToast('❌ '+e.message);}finally{hideLoading();}
+    updateHeaderName(); showToast('บันทึกแล้ว'); 
+  }catch(e){showToast('บันทึกไม่สำเร็จ');}finally{hideLoading();}
 }
-function showToast(msg){ const t=document.getElementById('saveToast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+function showToast(msg){ const t=document.getElementById('saveToast'); document.getElementById('toastMsg').textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 
 function renderColorSwatches(){ document.getElementById('colorSwatches').innerHTML=COLORS.map(c=>`<div class="swatch ${c===selectedColor?'selected':''}" style="background:${c}" onclick="selectColor('${c}')"></div>`).join(''); }
 function selectColor(c){selectedColor=c;renderColorSwatches();}
-function openAddModal(){ editId=null; document.getElementById('modalTitle').textContent='✏️ เพิ่มสินค้า'; ['pName','pPrice','pCategory'].forEach(id=>document.getElementById(id).value=''); selectedColor=COLORS[0]; renderColorSwatches(); document.getElementById('productModal').classList.add('open'); }
-function openEditModal(id){ const p=products.find(x=>x.id===id); if(!p)return; editId=id; document.getElementById('modalTitle').textContent='✏️ แก้ไขสินค้า'; document.getElementById('pName').value=p.name; document.getElementById('pPrice').value=p.price; document.getElementById('pCategory').value=p.category||''; selectedColor=p.color; renderColorSwatches(); document.getElementById('productModal').classList.add('open'); }
+function openAddModal(){ editId=null; document.getElementById('modalTitle').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> เพิ่มสินค้า'; ['pName','pPrice','pCategory'].forEach(id=>document.getElementById(id).value=''); selectedColor=COLORS[0]; renderColorSwatches(); document.getElementById('productModal').classList.add('open'); }
+function openEditModal(id){ const p=products.find(x=>x.id===id); if(!p)return; editId=id; document.getElementById('modalTitle').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> แก้ไขสินค้า'; document.getElementById('pName').value=p.name; document.getElementById('pPrice').value=p.price; document.getElementById('pCategory').value=p.category||''; selectedColor=p.color; renderColorSwatches(); document.getElementById('productModal').classList.add('open'); }
 function closeModal(){document.getElementById('productModal').classList.remove('open');}
 async function saveProduct(){
   const name=document.getElementById('pName').value.trim(), price=parseFloat(document.getElementById('pPrice').value), category=document.getElementById('pCategory').value.trim();
   if(!name||isNaN(price)) return alert('กรุณากรอกข้อมูลให้ครบ');
   if(editId) Object.assign(products.find(x=>x.id===editId)||{},{name,price,category,color:selectedColor}); else products.push({id:Date.now(),name,price,category,color:selectedColor});
-  closeModal(); showLoading('กำลังบันทึก...'); try{ await gasCall('saveProducts', products); renderProducts(); showToast('✅ บันทึกแล้ว'); }catch(e){showToast('❌ '+e.message);}finally{hideLoading();}
+  closeModal(); showLoading('กำลังบันทึก...'); try{ await gasCall('saveProducts', products); renderProducts(); showToast('บันทึกแล้ว'); }catch(e){showToast('บันทึกไม่สำเร็จ');}finally{hideLoading();}
 }
 
 async function init(){
@@ -683,7 +748,7 @@ async function init(){
     const [prods,hist,settings] = await Promise.all([gasCall('getProducts'), gasCall('getHistory'), gasCall('getSettings')]);
     products = prods||[]; salesHistory = hist||[]; storeSettings = {...DEFAULT_SETTINGS,...settings};
     updateHeaderName(); renderProducts();
-  }catch(err){ document.getElementById('productGrid').innerHTML=`<div style="grid-column:1/-1;color:var(--red);text-align:center;padding:24px;">❌ เชื่อมต่อ GAS ไม่ได้</div>`; }finally{hideLoading();}
+  }catch(err){ document.getElementById('productGrid').innerHTML=`<div style="grid-column:1/-1;color:var(--red);text-align:center;padding:24px;">เชื่อมต่อฐานข้อมูลไม่สำเร็จ</div>`; }finally{hideLoading();}
 }
 
 init();
