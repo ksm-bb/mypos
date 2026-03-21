@@ -434,7 +434,7 @@ textarea.form-input{resize:none;height:72px;line-height:1.5;}
 ═══════════════════════════════════════════════════════ */
 const GAS_URL = (typeof google !== 'undefined')
   ? '<?= ScriptApp.getService().getUrl() ?>'   // auto-inject ใน GAS
-  : 'วาง GAS Web App URL ที่นี่';              // ← แก้ตอนใช้งานนอก GAS
+  : 'https://script.google.com/macros/s/AKfycbxdQ0OMRzQ7VvizohFCnrgflw9BYvrjlA0l3_HfSVDb_AR9xdZzqX4lcqKrGBSJqMTe/exec';              // ← แก้ตอนใช้งานนอก GAS
 
 async function gasCall(action, payload = null) {
   const res = await fetch(GAS_URL, {
