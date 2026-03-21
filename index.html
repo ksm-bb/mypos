@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>My Store 🌸</title>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Mitr:wght@300;400;500&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 <style>
 :root {
   --bg:#fef8f2; --bg2:#fff4f8; --surface:#ffffff; --surface2:#fdf5f0;
@@ -21,7 +22,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 
-/* ── LAYOUT แสดงผลเต็มจอ ไม่มีกรอบ ── */
+/* ── LAYOUT แสดงผลเต็มจอ ไม่มีกรอบ แต่ล็อกความกว้าง ── */
 html, body {
   width: 100%;
   height: 100%;
@@ -102,7 +103,7 @@ html, body {
 .sum-row{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:var(--muted);margin-bottom:8px;font-weight:600;}
 .sum-row.total{font-size:1rem;color:var(--brown);font-weight:700;padding-top:10px;margin-top:4px;border-top:1.5px dashed var(--border);margin-bottom:12px;}
 .sum-row.total .total-val{font-size:1.15rem;}
-.disc-input{width:88px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:5px 10px;color:var(--text);text-align:right;}
+.disc-input{width:88px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:5px 10px;color:var(--text);text-align:right;outline:none;}
 .btn-checkout{width:100%;padding:15px;background:linear-gradient(135deg,var(--pink-btn),#e891aa);color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;}
 .btn-checkout:disabled{opacity:.38;}
 
@@ -145,12 +146,12 @@ html, body {
 .btn-save{flex:1;background:linear-gradient(135deg,var(--pink-btn),#e891aa);color:#fff;border:none;border-radius:14px;padding:14px;font-weight:700;cursor:pointer;}
 .btn-cancel{flex:1;background:var(--surface2);border:1.5px solid var(--border);color:var(--muted);border-radius:14px;padding:14px;font-weight:600;cursor:pointer;}
 
-/* ── RECEIPT PREVIEW ── */
+/* ── RECEIPT PREVIEW (ขอบหยัก) ── */
 .receipt-preview {
   background:#fff; border-radius:12px; padding:22px 20px;
   border:1.5px solid var(--border); font-family:'Sarabun',sans-serif;
   color:#333; font-size:13px; line-height:1.7; position: relative;
-  overflow: hidden; /* สำหรับ Animation หยัก */
+  overflow: hidden; 
 }
 .rp-logo { text-align:center; margin-bottom:6px; }
 .rp-logo img { max-width:70px; max-height:70px; border-radius:10px; }
@@ -186,35 +187,23 @@ html, body {
 }
 .rp-footer { text-align:center; font-size:.75rem; color:#999; margin-top:14px; font-style:italic; }
 
-/* ── Animation สำหรับใบเสร็จเลื่อนลง ── */
-#receiptContent {
-  animation: receiptSlideDown 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-}
-
-@keyframes receiptSlideDown {
-  from { transform: translateY(-100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-/* ── ขอบหยักๆ ของใบเสร็จ ── */
+/* ── ขอบหยัก ── */
 .receipt-preview::before, .receipt-preview::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 10px;
-  background-size: 20px 20px;
-  background-repeat: repeat-x;
+  content: ''; position: absolute; left: 0; width: 100%; height: 10px;
+  background-size: 20px 20px; background-repeat: repeat-x;
 }
 .receipt-preview::before {
-  top: 0;
-  background-image: linear-gradient(-45deg, #fff 10px, transparent 0), linear-gradient(45deg, #fff 10px, transparent 0);
-  margin-top: -10px; /* เพื่อให้ขอบหยักอยู่ด้านบน */
+  top: 0; background-image: linear-gradient(-45deg, #fff 10px, transparent 0), linear-gradient(45deg, #fff 10px, transparent 0); margin-top: -10px; 
 }
 .receipt-preview::after {
-  bottom: 0;
-  background-image: linear-gradient(-45deg, transparent 10px, #fff 0), linear-gradient(45deg, transparent 10px, #fff 0);
-  margin-bottom: -10px; /* เพื่อให้ขอบหยักอยู่ด้านล่าง */
+  bottom: 0; background-image: linear-gradient(-45deg, transparent 10px, #fff 0), linear-gradient(45deg, transparent 10px, #fff 0); margin-bottom: -10px; 
+}
+
+/* ── แอนิเมชันตอนโหลดภาพ ── */
+@keyframes pulseHint {
+  0% { transform: scale(1); box-shadow: 0 0 0 rgba(244,167,185,0.4); }
+  50% { transform: scale(1.02); box-shadow: 0 0 10px rgba(244,167,185,0.8); }
+  100% { transform: scale(1); box-shadow: 0 0 0 rgba(244,167,185,0.4); }
 }
 
 ::-webkit-scrollbar{display: none;}
@@ -381,8 +370,9 @@ html, body {
     <h3 style="text-align: center; margin-bottom: 14px;">🧾 ใบเสร็จ</h3>
     <div id="receiptContent">
       </div>
-    <div class="modal-btns" style="margin-top:16px">
-      <button class="btn-cancel" style="width:100%;" onclick="closeReceiptModal()">ปิด</button>
+    <div class="modal-btns" style="margin-top:16px; display: flex; gap: 8px;">
+      <button class="btn-cancel" onclick="closeReceiptModal()">ปิด</button>
+      <button class="btn-save" id="btnDownloadReceipt" onclick="saveReceiptImage()">📥 บันทึกรูป</button>
     </div>
   </div>
 </div>
@@ -393,7 +383,6 @@ html, body {
 /* ═══════════════════════════════════════════════════════
    GAS API LAYER
 ═══════════════════════════════════════════════════════ */
-// 👇👇 นำ URL Web App ของคุณมาใส่ในเครื่องหมายคำพูดด้านล่างนี้ 👇👇
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzX2ORQjrgKIijKkBr5CD6vNL4rCb8p_bsAotGelsT8sTOjmUGvdFmiG9bY6lVP0Fy9/exec"; 
 
 function gasCall(action, payload = null) {
@@ -420,6 +409,7 @@ let products = [], salesHistory = [], storeSettings = {};
 let order = [], editId = null, selectedColor = '#f9c8d4';
 let activeCategory = 'ทั้งหมด', currentTab = 'pos';
 let orderCounter = 0;
+let currentReceiptDataUrl = null; // เก็บรูปล่าสุดที่วาดเสร็จ
 
 const COLORS = ['#f9c8d4','#f4d0f0','#c8d8f9','#b8e8cc','#fde49a','#ddd0f5','#fcd5b0','#c8e8f4','#f5c9a8','#d4f0df'];
 const DEFAULT_SETTINGS = {
@@ -565,11 +555,55 @@ function buildReceiptHTML(rec){
   </div>`;
 }
 
+/* ── ระบบสร้างรูปภาพให้แตะค้าง + ฟังก์ชันปุ่มดาวน์โหลดสำหรับคอม ── */
 function showReceipt(rec){ 
-  document.getElementById('receiptContent').innerHTML=buildReceiptHTML(rec); 
+  const wrapper = document.getElementById('receiptContent');
+  const btnDownload = document.getElementById('btnDownloadReceipt');
+  
+  btnDownload.disabled = true;
+  btnDownload.textContent = '⏳ กำลังวาดใบเสร็จ...';
+  currentReceiptDataUrl = null;
+
+  // นำ HTML ดิบใส่เข้าไปก่อนเพื่อเตรียมแคปรูป
+  wrapper.innerHTML = `
+    <div id="receiptRaw">${buildReceiptHTML(rec)}</div>
+    <div id="receiptLoading" style="text-align:center; padding:30px 10px; font-weight:700; color:var(--brown);">
+      ⏳ กำลังประมวลผลใบเสร็จ...
+    </div>
+  `;
   document.getElementById('receiptModal').classList.add('open'); 
-  // ใส่เสียงเล็กน้อยถ้าต้องการ
-  // new Audio('receipt.mp3').play();
+
+  const rawEl = document.getElementById('receiptRaw');
+  
+  // หน่วงเวลาเล็กน้อยเพื่อให้ฟอนต์และรูปโหลดเสร็จ 100%
+  setTimeout(() => {
+    htmlToImage.toPng(rawEl, { backgroundColor: '#ffffff', pixelRatio: 3, style: { margin: '0' } })
+    .then(dataUrl => {
+      currentReceiptDataUrl = dataUrl;
+      // ลบ HTML ดิบออก แล้วแทนที่ด้วยรูปภาพที่กดค้างเซฟได้ทันที!
+      wrapper.innerHTML = `
+        <img src="${dataUrl}" style="width:100%; border-radius:12px; display:block; box-shadow: 0 4px 14px rgba(0,0,0,0.08);">
+        <div style="text-align:center; background:#fff0f4; border: 1.5px dashed var(--pink-btn); color:var(--red); margin-top:14px; padding:12px; border-radius:12px; font-weight:700; font-size:.85rem; animation: pulseHint 2s infinite;">
+          👇 แตะค้างที่รูปใบเสร็จเพื่อเซฟลงเครื่องได้เลย 👇
+        </div>
+      `;
+      btnDownload.disabled = false;
+      btnDownload.textContent = '📥 บันทึกรูป';
+    }).catch(err => {
+      document.getElementById('receiptLoading').textContent = '❌ โหลดรูปไม่สำเร็จ (ตรวจสอบลิงก์รูปว่าฝากจากเว็บที่รองรับหรือไม่)';
+      btnDownload.textContent = '❌ ผิดพลาด';
+    });
+  }, 400); 
+}
+
+function saveReceiptImage(){
+  if(currentReceiptDataUrl) {
+    const link=document.createElement('a');
+    link.download='receipt_'+Date.now()+'.png';
+    link.href=currentReceiptDataUrl;
+    link.click();
+    showToast('✅ บันทึกรูปลงคอมพิวเตอร์แล้ว');
+  }
 }
 
 function closeReceiptModal() {
