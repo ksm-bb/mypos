@@ -142,7 +142,7 @@ html, body {
 .swatch.selected{border-color:var(--brown);transform:scale(1.1);}
 .modal-btns{display:flex;gap:10px;margin-top:22px;}
 .btn-save{flex:1;background:linear-gradient(135deg,var(--pink-btn),#e891aa);color:#fff;border:none;border-radius:14px;padding:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
-.btn-cancel{flex:1;background:var(--surface2);border:1.5px solid var(--border);color:var(--muted);border-radius:14px;padding:14px;font-weight:600;cursor:pointer;}
+.btn-cancel{flex:1;background:var(--surface2);border:1.5px solid var(--border);color:var(--muted);border-radius:14px;padding:14px;font-weight:600;cursor:pointer;width:100%;}
 
 /* ── RECEIPT PREVIEW ── */
 .receipt-preview {
@@ -614,7 +614,7 @@ async function checkout(){
   } catch(err) { showToast('บันทึกไม่สำเร็จ'); document.getElementById('checkoutBtn').disabled = false; } finally { hideLoading(); }
 }
 
-/* ── ระบบแปลง URL เป็น Base64 โดยตรง เพื่อแก้ปัญหาชัวร์ 100% ── */
+/* ── ระบบแปลง URL เป็น Base64 โดยตรง เพื่อแก้ปัญหาใบเสร็จแหว่งแบบ 100% ── */
 function getBase64Image(url) {
   return new Promise((resolve) => {
     if (!url) return resolve('');
@@ -656,7 +656,7 @@ function buildReceiptHTML(rec, logoB64, qrB64){
 async function showReceipt(rec){ 
   const wrapper = document.getElementById('receiptContent');
 
-  // ขึ้นฉากโหลดรอก่อน
+  // โชว์หน้าโหลดระหว่างแปลงรูป เพื่อไม่ให้มี HTML แหว่งๆ โผล่มาก่อน
   wrapper.innerHTML = `
     <div id="receiptLoading" style="text-align:center; padding:40px 20px; font-weight:700; color:var(--brown);">
       <div class="loading-dots"><div class="dot" style="background:var(--pink-btn)"></div><div class="dot" style="background:var(--pink-btn)"></div><div class="dot" style="background:var(--pink-btn)"></div></div>
@@ -665,23 +665,24 @@ async function showReceipt(rec){
   `;
   document.getElementById('receiptModal').classList.add('open'); 
 
-  // โหลดรูปและแปลงเป็น Base64 ให้เสร็จสรรพก่อนวาดใบเสร็จ (แก้ปัญหา 100%)
+  // รอโหลดรูปและแปลงเป็น Base64 ฝังเข้าโค้ด HTML เลย (ไม่ต้องรอโหลดข้ามเว็บตอนแคปภาพ)
   const logoB64 = await getBase64Image(storeSettings.logoData);
   const qrB64 = await getBase64Image(storeSettings.qrData);
   await (document.fonts ? document.fonts.ready : Promise.resolve());
 
-  // นำรูป Base64 ประกอบร่างลง HTML
+  // ประกอบโค้ดและซ่อนไว้รอแคป
   wrapper.innerHTML = `
     <div style="position:relative; border-radius:12px; overflow:hidden;">
       <div id="receiptRaw">${buildReceiptHTML(rec, logoB64, qrB64)}</div>
     </div>
   `;
 
-  // รอ 0.1 วิ ให้หน้าจอกระพริบรับ HTML ใหม่ แล้วแคปรูปเลย
+  // หน่วง 0.1 วินาที ให้ DOM เรนเดอร์ HTML ลงจอเสร็จ แล้วสั่งแคปเลย
   setTimeout(() => {
     const rawEl = document.getElementById('receiptRaw');
     htmlToImage.toPng(rawEl, { backgroundColor: '#ffffff', pixelRatio: 3, style: { margin: '0' } })
     .then(dataUrl => {
+      // เอาภาพที่สมบูรณ์มาโชว์ พร้อมให้แตะค้างเซฟรูปได้
       wrapper.innerHTML = `
         <img src="${dataUrl}" style="width:100%; border-radius:12px; display:block; box-shadow: 0 4px 14px rgba(0,0,0,0.08);">
         <div style="text-align:center; background:#fff0f4; border: 1.5px dashed var(--pink-btn); color:var(--red); margin-top:14px; padding:12px; border-radius:12px; font-weight:700; font-size:.85rem;">
