@@ -141,7 +141,7 @@ html, body {
 .swatch.selected{border-color:var(--brown);transform:scale(1.1);}
 .modal-btns{display:flex;gap:10px;margin-top:22px;}
 .btn-save{flex:1;background:linear-gradient(135deg,var(--pink-btn),#e891aa);color:#fff;border:none;border-radius:14px;padding:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
-.btn-cancel{flex:1;background:var(--surface2);border:1.5px solid var(--border);color:var(--muted);border-radius:14px;padding:14px;font-weight:600;cursor:pointer;}
+.btn-cancel{flex:1;background:var(--surface2);border:1.5px solid var(--border);color:var(--muted);border-radius:14px;padding:14px;font-weight:600;cursor:pointer;width:100%;}
 
 /* ── RECEIPT PREVIEW ── */
 .receipt-preview {
@@ -183,6 +183,14 @@ html, body {
   font-weight:600;
 }
 .rp-footer { text-align:center; font-size:.75rem; color:#999; margin-top:14px; font-style:italic; }
+
+/* ── ขอบหยัก ── */
+.receipt-preview::before, .receipt-preview::after {
+  content: ''; position: absolute; left: 0; width: 100%; height: 10px;
+  background-size: 20px 20px; background-repeat: repeat-x;
+}
+.receipt-preview::before { top: 0; background-image: linear-gradient(-45deg, #fff 10px, transparent 0), linear-gradient(45deg, #fff 10px, transparent 0); margin-top: -10px; }
+.receipt-preview::after { bottom: 0; background-image: linear-gradient(-45deg, transparent 10px, #fff 0), linear-gradient(45deg, transparent 10px, #fff 0); margin-bottom: -10px; }
 
 ::-webkit-scrollbar{display: none;}
 </style>
@@ -385,11 +393,7 @@ html, body {
     </h3>
     <div id="receiptContent"></div>
     <div class="modal-btns" style="margin-top:16px; display: flex; gap: 8px;">
-      <button class="btn-cancel" onclick="closeReceiptModal()">ปิด</button>
-      <button class="btn-save" id="btnDownloadReceipt" onclick="saveReceiptImage()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        บันทึกรูป
-      </button>
+      <button class="btn-cancel" style="width:100%;" onclick="closeReceiptModal()">ปิด</button>
     </div>
   </div>
 </div>
@@ -432,7 +436,6 @@ let products = [], salesHistory = [], storeSettings = {};
 let order = [], editId = null, selectedColor = '#f9c8d4';
 let activeCategory = 'ทั้งหมด', currentTab = 'pos';
 let orderCounter = 0;
-let currentReceiptDataUrl = null; 
 
 const COLORS = ['#f9c8d4','#f4d0f0','#c8d8f9','#b8e8cc','#fde49a','#ddd0f5','#fcd5b0','#c8e8f4','#f5c9a8','#d4f0df'];
 const DEFAULT_SETTINGS = {
@@ -486,7 +489,7 @@ function renderCategories() {
 }
 function setCategory(cat) { activeCategory=cat; renderCategories(); renderProducts(); }
 
-/* ── ระบบ Long Press (กดค้าง) + บล็อกเมาส์เมื่อใช้การแตะ ── */
+/* ── ระบบ Long Press (กดค้าง) + แก้ไขกด 1 ได้ 2 ── */
 let pressTimer = null;
 let isLongPress = false;
 let touchStartY = 0;
@@ -625,20 +628,17 @@ function buildReceiptHTML(rec){
   </div>`;
 }
 
-/* ── ระบบแคปภาพใบเสร็จแบบบังคับรอโหลดรูปครบ 100% ── */
+/* ── ระบบแคปภาพใบเสร็จแบบรอให้ทุกอย่างโหลดเสร็จ 100% ── */
 function showReceipt(rec){ 
   const wrapper = document.getElementById('receiptContent');
-  const btnDownload = document.getElementById('btnDownloadReceipt');
-  
-  btnDownload.disabled = true;
-  btnDownload.innerHTML = '<div class="loading-dots" style="height:20px; display:inline-flex;"><div class="dot" style="width:6px;height:6px;background:#fff"></div><div class="dot" style="width:6px;height:6px;background:#fff"></div><div class="dot" style="width:6px;height:6px;background:#fff"></div></div>';
-  currentReceiptDataUrl = null;
 
   wrapper.innerHTML = `
-    <div id="receiptRaw">${buildReceiptHTML(rec)}</div>
-    <div id="receiptLoading" style="text-align:center; padding:30px 10px; font-weight:700; color:var(--brown);">
-      <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-      <div style="margin-top:10px">กำลังเตรียมรูปภาพ...</div>
+    <div style="position:relative; border-radius:12px; overflow:hidden;">
+      <div id="receiptRaw">${buildReceiptHTML(rec)}</div>
+      <div id="receiptLoading" style="position:absolute; top:0; left:0; right:0; bottom:0; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10;">
+        <div class="loading-dots"><div class="dot" style="background:var(--pink-btn)"></div><div class="dot" style="background:var(--pink-btn)"></div><div class="dot" style="background:var(--pink-btn)"></div></div>
+        <div style="margin-top:10px; font-weight:700; color:var(--brown);">กำลังเตรียมรูปใบเสร็จ...</div>
+      </div>
     </div>
   `;
   document.getElementById('receiptModal').classList.add('open'); 
@@ -646,44 +646,37 @@ function showReceipt(rec){
   const rawEl = document.getElementById('receiptRaw');
   const images = Array.from(rawEl.querySelectorAll('img'));
   
-  // บังคับให้เบราว์เซอร์รอโหลดรูปให้เสร็จก่อนวาด
+  // บังคับให้เบราว์เซอร์รอโหลดรูปภาพทุกลิงก์ให้เสร็จสมบูรณ์
   const imagePromises = images.map(img => {
-    if (img.complete) return Promise.resolve();
     return new Promise(resolve => { 
-      img.onload = resolve; 
-      img.onerror = resolve; 
+      if (img.complete && img.naturalHeight !== 0) {
+        resolve();
+      } else {
+        img.onload = () => resolve(); 
+        img.onerror = () => resolve(); 
+      }
     });
   });
 
-  Promise.all(imagePromises).then(() => {
+  // บังคับรอให้ฟอนต์โหลดเสร็จด้วย (ถ้าเบราว์เซอร์รองรับ)
+  const fontPromise = document.fonts ? document.fonts.ready : Promise.resolve();
+
+  Promise.all([...imagePromises, fontPromise]).then(() => {
+    // ให้เวลา DOM จัดเรียงตัวเองอีก 0.5 วินาที เพื่อความชัวร์ใน iOS/Safari
     setTimeout(() => {
       htmlToImage.toPng(rawEl, { backgroundColor: '#ffffff', pixelRatio: 3, style: { margin: '0' } })
       .then(dataUrl => {
-        currentReceiptDataUrl = dataUrl;
         wrapper.innerHTML = `
           <img src="${dataUrl}" style="width:100%; border-radius:12px; display:block; box-shadow: 0 4px 14px rgba(0,0,0,0.08);">
           <div style="text-align:center; background:#fff0f4; border: 1.5px dashed var(--pink-btn); color:var(--red); margin-top:14px; padding:12px; border-radius:12px; font-weight:700; font-size:.85rem;">
             👇 แตะค้างที่รูปใบเสร็จเพื่อเซฟลงเครื่องได้เลย 👇
           </div>
         `;
-        btnDownload.disabled = false;
-        btnDownload.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> บันทึกรูป';
       }).catch(err => {
-        document.getElementById('receiptLoading').textContent = 'โหลดรูปไม่สำเร็จ (ตรวจสอบลิงก์รูปภาพ)';
-        btnDownload.innerHTML = 'ผิดพลาด';
+        document.getElementById('receiptLoading').innerHTML = '<div style="color:var(--red);">❌ โหลดรูปไม่สำเร็จ<br><span style="font-size:.75rem;font-weight:500;">(ระบบปฏิบัติการบล็อกการสร้างภาพ กรุณาลองใหม่)</span></div>';
       });
-    }, 200); 
+    }, 500); 
   });
-}
-
-function saveReceiptImage(){
-  if(currentReceiptDataUrl) {
-    const link=document.createElement('a');
-    link.download='receipt_'+Date.now()+'.png';
-    link.href=currentReceiptDataUrl;
-    link.click();
-    showToast('บันทึกรูปแล้ว');
-  }
 }
 
 function closeReceiptModal() {
@@ -748,7 +741,7 @@ function showToast(msg){ const t=document.getElementById('saveToast'); document.
 function renderColorSwatches(){ document.getElementById('colorSwatches').innerHTML=COLORS.map(c=>`<div class="swatch ${c===selectedColor?'selected':''}" style="background:${c}" onclick="selectColor('${c}')"></div>`).join(''); }
 function selectColor(c){selectedColor=c;renderColorSwatches();}
 
-/* ── ระบบดึงหมวดหมู่ล่าสุดมาใส่ฟอร์ม ── */
+/* ── ระบบจำหมวดหมู่ ── */
 function openAddModal(){ 
   editId=null; 
   document.getElementById('modalTitle').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> เพิ่มสินค้า'; 
