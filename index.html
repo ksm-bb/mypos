@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>My Store</title>
+<title>My Store 🌸</title>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Mitr:wght@300;400;500&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 <style>
@@ -29,6 +29,13 @@ html, body {
 .main-container {
   width: 100%; max-width: 430px; margin: 0 auto; height: 100%; position: relative; overflow: hidden;
 }
+
+/* ── LOADING ANIMATION (WAVE DOTS) ── */
+.loading-dots { display: flex; gap: 6px; justify-content: center; align-items: center; height: 40px; }
+.dot { width: 10px; height: 10px; background: var(--brown); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+.dot:nth-child(1) { animation-delay: -0.32s; }
+.dot:nth-child(2) { animation-delay: -0.16s; }
+@keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
 /* ── HEADER ── */
 .app-header{position:absolute;top:0;left:0;right:0;height:var(--header-h);background:var(--surface);border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;z-index:200;}
@@ -122,6 +129,7 @@ html, body {
 .logo-preview img{width:100%;height:100%;object-fit:cover;}
 .qr-preview{width:80px;height:80px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--muted);overflow:hidden;flex-shrink:0;}
 .qr-preview img{width:100%;height:100%;object-fit:cover;}
+.qr-upload-right{flex:1;}
 .btn-save-settings{width:100%;padding:14px;background:linear-gradient(135deg,var(--pink-btn),#e891aa);color:#fff;border:none;border-radius:14px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:6px;}
 
 .save-toast{position:absolute;bottom:calc(var(--nav-h) + 14px);left:50%;transform:translateX(-50%);background:var(--brown);color:#fff;padding:10px 22px;border-radius:99px;font-size:.82rem;font-weight:700;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;}
@@ -175,20 +183,6 @@ html, body {
   font-weight:600;
 }
 .rp-footer { text-align:center; font-size:.75rem; color:#999; margin-top:14px; font-style:italic; }
-
-/* ── ขอบหยัก ── */
-.receipt-preview::before, .receipt-preview::after {
-  content: ''; position: absolute; left: 0; width: 100%; height: 10px;
-  background-size: 20px 20px; background-repeat: repeat-x;
-}
-.receipt-preview::before { top: 0; background-image: linear-gradient(-45deg, #fff 10px, transparent 0), linear-gradient(45deg, #fff 10px, transparent 0); margin-top: -10px; }
-.receipt-preview::after { bottom: 0; background-image: linear-gradient(-45deg, transparent 10px, #fff 0), linear-gradient(45deg, transparent 10px, #fff 0); margin-bottom: -10px; }
-
-@keyframes pulseHint {
-  0% { transform: scale(1); box-shadow: 0 0 0 rgba(244,167,185,0.4); }
-  50% { transform: scale(1.02); box-shadow: 0 0 10px rgba(244,167,185,0.8); }
-  100% { transform: scale(1); box-shadow: 0 0 0 rgba(244,167,185,0.4); }
-}
 
 ::-webkit-scrollbar{display: none;}
 </style>
@@ -443,19 +437,17 @@ let currentReceiptDataUrl = null;
 const COLORS = ['#f9c8d4','#f4d0f0','#c8d8f9','#b8e8cc','#fde49a','#ddd0f5','#fcd5b0','#c8e8f4','#f5c9a8','#d4f0df'];
 const DEFAULT_SETTINGS = {
   storeName: 'My Store', storeDetail: 'ใบเสร็จรับเงินอย่างย่อ',
-  contact: '', paymentInfo: '', footer: 'ขอบคุณที่ใช้บริการ', logoData: '', qrData: ''
+  contact: '', paymentInfo: '', footer: 'ขอบคุณที่ใช้บริการ', logoData: '', qrData: '', lastCategory: ''
 };
 
-function showLoading(msg='กำลังโหลด...') {
+function showLoading(msg='') {
   let el = document.getElementById('loadingOverlay');
   if (!el) {
     el = document.createElement('div');
     el.id = 'loadingOverlay';
     el.style.cssText = `position:absolute;inset:0;background:rgba(254,248,242,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-weight:700;color:var(--brown);backdrop-filter:blur(4px);border-radius:inherit;`;
     el.innerHTML = `
-      <svg class="spinner" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--brown)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite;">
-        <line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="4.93" x2="19.07" y2="7.76"></line>
-      </svg>
+      <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
       <span id="loadingMsg" style="margin-top:10px"></span>
     `;
     document.querySelector('.main-container').appendChild(el);
@@ -494,32 +486,41 @@ function renderCategories() {
 }
 function setCategory(cat) { activeCategory=cat; renderCategories(); renderProducts(); }
 
-/* ── ระบบ Long Press (กดค้าง) ── */
+/* ── ระบบ Long Press (กดค้าง) + บล็อกเมาส์เมื่อใช้การแตะ ── */
 let pressTimer = null;
 let isLongPress = false;
 let touchStartY = 0;
+let isTouching = false;
 
 function startPress(e, id) {
+  if (e.type === 'touchstart') isTouching = true;
+  if (e.type === 'mousedown' && isTouching) return; 
+  
   isLongPress = false;
   if(e && e.touches) touchStartY = e.touches[0].clientY;
   pressTimer = setTimeout(() => {
     isLongPress = true;
-    if (navigator.vibrate) navigator.vibrate(50); // สั่นเตือนเบาๆ
+    if (navigator.vibrate) navigator.vibrate(50); 
     openEditModal(id);
-  }, 500); // กดค้าง 0.5 วินาที
+  }, 500); 
 }
 
 function endPress(e, id) {
+  if (e.type === 'mouseup' && isTouching) {
+    setTimeout(() => isTouching = false, 100); 
+    return;
+  }
   clearTimeout(pressTimer);
   if (!isLongPress) {
-    addToOrder(id); // ถ้ากดสั้น ให้ลงตะกร้า
+    addToOrder(id); 
   }
 }
 
 function cancelPress(e) {
+  if (e.type === 'mouseleave' && isTouching) return;
   if (e && e.touches) {
     let moveY = e.touches[0].clientY;
-    if (Math.abs(moveY - touchStartY) > 10) clearTimeout(pressTimer); // ยกเลิกถ้านิ้วเลื่อน (Scroll)
+    if (Math.abs(moveY - touchStartY) > 10) clearTimeout(pressTimer); 
   } else {
     clearTimeout(pressTimer);
   }
@@ -624,41 +625,55 @@ function buildReceiptHTML(rec){
   </div>`;
 }
 
+/* ── ระบบแคปภาพใบเสร็จแบบบังคับรอโหลดรูปครบ 100% ── */
 function showReceipt(rec){ 
   const wrapper = document.getElementById('receiptContent');
   const btnDownload = document.getElementById('btnDownloadReceipt');
   
   btnDownload.disabled = true;
-  btnDownload.innerHTML = '<svg class="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite;"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="4.93" x2="19.07" y2="7.76"></line></svg> รอสักครู่...';
+  btnDownload.innerHTML = '<div class="loading-dots" style="height:20px; display:inline-flex;"><div class="dot" style="width:6px;height:6px;background:#fff"></div><div class="dot" style="width:6px;height:6px;background:#fff"></div><div class="dot" style="width:6px;height:6px;background:#fff"></div></div>';
   currentReceiptDataUrl = null;
 
   wrapper.innerHTML = `
     <div id="receiptRaw">${buildReceiptHTML(rec)}</div>
     <div id="receiptLoading" style="text-align:center; padding:30px 10px; font-weight:700; color:var(--brown);">
-      ⏳ กำลังประมวลผลใบเสร็จ...
+      <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      <div style="margin-top:10px">กำลังเตรียมรูปภาพ...</div>
     </div>
   `;
   document.getElementById('receiptModal').classList.add('open'); 
 
   const rawEl = document.getElementById('receiptRaw');
+  const images = Array.from(rawEl.querySelectorAll('img'));
   
-  setTimeout(() => {
-    htmlToImage.toPng(rawEl, { backgroundColor: '#ffffff', pixelRatio: 3, style: { margin: '0' } })
-    .then(dataUrl => {
-      currentReceiptDataUrl = dataUrl;
-      wrapper.innerHTML = `
-        <img src="${dataUrl}" style="width:100%; border-radius:12px; display:block; box-shadow: 0 4px 14px rgba(0,0,0,0.08);">
-        <div style="text-align:center; background:#fff0f4; border: 1.5px dashed var(--pink-btn); color:var(--red); margin-top:14px; padding:12px; border-radius:12px; font-weight:700; font-size:.85rem;">
-          👇 แตะค้างที่รูปใบเสร็จเพื่อเซฟลงเครื่องได้เลย 👇
-        </div>
-      `;
-      btnDownload.disabled = false;
-      btnDownload.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> บันทึกรูป';
-    }).catch(err => {
-      document.getElementById('receiptLoading').textContent = 'โหลดรูปไม่สำเร็จ (ตรวจสอบลิงก์รูปภาพ)';
-      btnDownload.innerHTML = 'ผิดพลาด';
+  // บังคับให้เบราว์เซอร์รอโหลดรูปให้เสร็จก่อนวาด
+  const imagePromises = images.map(img => {
+    if (img.complete) return Promise.resolve();
+    return new Promise(resolve => { 
+      img.onload = resolve; 
+      img.onerror = resolve; 
     });
-  }, 400); 
+  });
+
+  Promise.all(imagePromises).then(() => {
+    setTimeout(() => {
+      htmlToImage.toPng(rawEl, { backgroundColor: '#ffffff', pixelRatio: 3, style: { margin: '0' } })
+      .then(dataUrl => {
+        currentReceiptDataUrl = dataUrl;
+        wrapper.innerHTML = `
+          <img src="${dataUrl}" style="width:100%; border-radius:12px; display:block; box-shadow: 0 4px 14px rgba(0,0,0,0.08);">
+          <div style="text-align:center; background:#fff0f4; border: 1.5px dashed var(--pink-btn); color:var(--red); margin-top:14px; padding:12px; border-radius:12px; font-weight:700; font-size:.85rem;">
+            👇 แตะค้างที่รูปใบเสร็จเพื่อเซฟลงเครื่องได้เลย 👇
+          </div>
+        `;
+        btnDownload.disabled = false;
+        btnDownload.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> บันทึกรูป';
+      }).catch(err => {
+        document.getElementById('receiptLoading').textContent = 'โหลดรูปไม่สำเร็จ (ตรวจสอบลิงก์รูปภาพ)';
+        btnDownload.innerHTML = 'ผิดพลาด';
+      });
+    }, 200); 
+  });
 }
 
 function saveReceiptImage(){
@@ -732,18 +747,43 @@ function showToast(msg){ const t=document.getElementById('saveToast'); document.
 
 function renderColorSwatches(){ document.getElementById('colorSwatches').innerHTML=COLORS.map(c=>`<div class="swatch ${c===selectedColor?'selected':''}" style="background:${c}" onclick="selectColor('${c}')"></div>`).join(''); }
 function selectColor(c){selectedColor=c;renderColorSwatches();}
-function openAddModal(){ editId=null; document.getElementById('modalTitle').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> เพิ่มสินค้า'; ['pName','pPrice','pCategory'].forEach(id=>document.getElementById(id).value=''); selectedColor=COLORS[0]; renderColorSwatches(); document.getElementById('productModal').classList.add('open'); }
+
+/* ── ระบบดึงหมวดหมู่ล่าสุดมาใส่ฟอร์ม ── */
+function openAddModal(){ 
+  editId=null; 
+  document.getElementById('modalTitle').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> เพิ่มสินค้า'; 
+  document.getElementById('pName').value=''; 
+  document.getElementById('pPrice').value=''; 
+  document.getElementById('pCategory').value=storeSettings.lastCategory || ''; 
+  selectedColor=COLORS[0]; 
+  renderColorSwatches(); 
+  document.getElementById('productModal').classList.add('open'); 
+}
+
 function openEditModal(id){ const p=products.find(x=>x.id===id); if(!p)return; editId=id; document.getElementById('modalTitle').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> แก้ไขสินค้า'; document.getElementById('pName').value=p.name; document.getElementById('pPrice').value=p.price; document.getElementById('pCategory').value=p.category||''; selectedColor=p.color; renderColorSwatches(); document.getElementById('productModal').classList.add('open'); }
 function closeModal(){document.getElementById('productModal').classList.remove('open');}
+
 async function saveProduct(){
   const name=document.getElementById('pName').value.trim(), price=parseFloat(document.getElementById('pPrice').value), category=document.getElementById('pCategory').value.trim();
   if(!name||isNaN(price)) return alert('กรุณากรอกข้อมูลให้ครบ');
-  if(editId) Object.assign(products.find(x=>x.id===editId)||{},{name,price,category,color:selectedColor}); else products.push({id:Date.now(),name,price,category,color:selectedColor});
-  closeModal(); showLoading('กำลังบันทึก...'); try{ await gasCall('saveProducts', products); renderProducts(); showToast('บันทึกแล้ว'); }catch(e){showToast('บันทึกไม่สำเร็จ');}finally{hideLoading();}
+  
+  storeSettings.lastCategory = category; // เซฟหมวดหมู่ลงชีตผ่าน Settings
+  
+  if(editId) Object.assign(products.find(x=>x.id===editId)||{},{name,price,category,color:selectedColor}); 
+  else products.push({id:Date.now(),name,price,category,color:selectedColor});
+  
+  closeModal(); showLoading('กำลังบันทึก...'); 
+  try{ 
+    await Promise.all([
+      gasCall('saveProducts', products),
+      gasCall('saveSettings', storeSettings)
+    ]);
+    renderProducts(); showToast('บันทึกแล้ว'); 
+  }catch(e){showToast('บันทึกไม่สำเร็จ');}finally{hideLoading();}
 }
 
 async function init(){
-  showLoading('กำลังโหลดข้อมูล...');
+  showLoading(''); 
   try{
     const [prods,hist,settings] = await Promise.all([gasCall('getProducts'), gasCall('getHistory'), gasCall('getSettings')]);
     products = prods||[]; salesHistory = hist||[]; storeSettings = {...DEFAULT_SETTINGS,...settings};
